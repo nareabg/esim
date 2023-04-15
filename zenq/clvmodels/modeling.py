@@ -8,7 +8,7 @@ from lifetimes import BetaGeoFitter
 import pandas as pd
 from datetime import datetime, timedelta
 from sqlalchemy.orm import joinedload
-from .models import Base, Location, Customer, Facts, CustomerFact, Prediction
+from .tables import Base, Location, Customer, Facts, CustomerFact, Prediction
 
 class Model:
     def __init__(self, db_uri):
