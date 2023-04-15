@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from modeling import Model
 from tables import CustomerFact, Prediction
 import pandas as pd
+
 class points():
     
 
