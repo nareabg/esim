@@ -1,3 +1,4 @@
 from .. import utils
-from .beta import BGnbd
+from .modeling import Model
 from .gamma import GammaGamma
+

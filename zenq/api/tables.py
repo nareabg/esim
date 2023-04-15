@@ -17,32 +17,32 @@ with engine.connect() as conn:
     conn.execute('CREATE SCHEMA IF NOT EXISTS result')
 
 class Location(Base):
-    _tablename_ = 'Location'
-    _table_args_ = {'schema': 'initial'}
+    __tablename__ = 'Location'
+    __table_args__ = {'schema': 'initial'}
 
     id = Column(Integer, primary_key=True)
     location_id = Column(String(50), unique=True, nullable=False)
     location_name = Column(String(50), unique=True, nullable=False)
 
-    def _repr_(self):
+    def __repr__(self):
         return f"<Location(id={self.id}, location_id='{self.location_id}', location_name='{self.location_name}')>"
 
 
 class Customer(Base):
-    _tablename_ = 'Customer'
-    _table_args_ = {'schema': 'initial'}
+    __tablename__ = 'Customer'
+    __table_args__ = {'schema': 'initial'}
 
     id = Column(Integer, primary_key=True)
     customer_id = Column(String(50), unique=True, nullable=False)
     gender = Column(String(10))
 
-    def _repr_(self):
+    def __repr__(self):
         return f"<Customer(id={self.id}, customer_id='{self.customer_id}', gender='{self.gender}')>"
 
 
 class Facts(Base):
-    _tablename_ = 'Facts'
-    _table_args_ = {'schema': 'initial'}
+    __tablename__ = 'Facts'
+    __table_args__ = {'schema': 'initial'}
 
     id = Column(Integer, primary_key=True)
     customer_id = Column(String(50), ForeignKey('initial.Customer.customer_id'), nullable=False)
@@ -51,14 +51,18 @@ class Facts(Base):
     quantity = Column(Float, nullable=False)
     total_price = Column(Float, nullable=False)
     gender = Column(String(10))
-    unit_price = Column(Float, nullable=False, computed="total_price / quantity")
+    
+    @property
+    def unit_price(self):
+        return self.total_price / self.quantity
 
-    def _repr_(self):
+    def __repr__(self):
         return f"<Facts(id={self.id}, customer_id='{self.customer_id}', location_id='{self.location_id}', date='{self.date}', quantity={self.quantity}, total_price={self.total_price}, gender='{self.gender}', unit_price={self.unit_price})>"
 
+
 class CustomerFact(Base):
-    tablename = 'CustomerFact'
-    table_arg = {'schema': 'result'}
+    __tablename__ = 'CustomerFact'
+    __table_args__ = {'schema': 'result'}
 
     id = Column(Integer, primary_key=True)
     customer_id = Column(String(50), unique=True, nullable=False)
@@ -67,6 +71,7 @@ class CustomerFact(Base):
     quantity = Column(Float, nullable=False)
     price = Column(Float, nullable=False)
     CLV = Column(Float, nullable=False)
+    
 
     def _repr_(self):
         return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', date='{self.date}', invocie_id='{self.invoice_id}', quantity='{self.quantity}', price='{self.price}', CLV='{self.CLV}')>"
@@ -74,8 +79,8 @@ class CustomerFact(Base):
 
 
 class Prediction(Base):
-    tablename = 'Prediction'
-    table_arg = {'schema': 'result'}
+    __tablename__  = 'Prediction'
+    __table_args__ = {'schema': 'result'}
 
     id = Column(Integer, primary_key=True)
     customer_id = Column(String(50), unique=True, nullable=False)
