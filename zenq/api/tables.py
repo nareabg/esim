@@ -56,3 +56,35 @@ class Facts(Base):
     def _repr_(self):
         return f"<Facts(id={self.id}, customer_id='{self.customer_id}', location_id='{self.location_id}', date='{self.date}', quantity={self.quantity}, total_price={self.total_price}, gender='{self.gender}', unit_price={self.unit_price})>"
 
+class CustomerFact(Base):
+    tablename = 'CustomerFact'
+    table_arg = {'schema': 'result'}
+
+    id = Column(Integer, primary_key=True)
+    customer_id = Column(String(50), unique=True, nullable=False)
+    date = Column(Integer, nullable=False)
+    invoice_id = Column(Integer, nullable=False)
+    quantity = Column(Float, nullable=False)
+    price = Column(Float, nullable=False)
+    CLV = Column(Float, nullable=False)
+
+    def _repr_(self):
+        return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', date='{self.date}', invocie_id='{self.invoice_id}', quantity='{self.quantity}', price='{self.price}', CLV='{self.CLV}')>"
+
+
+
+class Prediction(Base):
+    tablename = 'Prediction'
+    table_arg = {'schema': 'result'}
+
+    id = Column(Integer, primary_key=True)
+    customer_id = Column(String(50), unique=True, nullable=False)
+    recency = Column(Float, nullable=False)
+    frequency = Column(Integer, nullable=False)
+    monetary = Column(Float, nullable=False)
+    T = Column(Float, nullable=False)
+    pred_1month = Column(Float, nullable=False)
+
+
+    def _repr_(self):
+        return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', recency='{self.recency}', frequency='{self.frequency}', monetary='{self.monetary}', T='{self.T}', pred_1month='{self.pred_1month}')>"
