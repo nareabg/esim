@@ -1,9 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from tables import Location, Customer, Facts
+from .tables import Location, Customer, Facts
 from sqlalchemy.orm import sessionmaker
-from modeling import Model
-from tables import CustomerFact, Prediction
+from zenq.clvmodels.modeling import Model
+from .tables import CustomerFact, Prediction
 import pandas as pd
 
 class points():
