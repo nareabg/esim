@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
-from .tables import metadata
+from sqlalchemy.orm import declarative_base
 
-
+Base = declarative_base()
+metadata = Base.metadata
 username = "postgres"
 password = "mysecretpassword"
 hostname = "localhost"  # This is the database's service name which is 'database'.
