@@ -1,8 +1,11 @@
+import sqlalchemy
+from sqlalchemy import exc
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import CreateSchema
+
 
 engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/postgres')
 Session = sessionmaker(bind=engine)
@@ -13,14 +16,14 @@ metadata = Base.metadata
 with engine.connect() as conn:
     try:
         conn.execute(CreateSchema('initial', if_not_exists=True))
-    except InvalidSchemaName:
+    except exc.SQLAlchemyError:
         pass
 
 # Create the result schema
 with engine.connect() as conn:
     try: 
        conn.execute(CreateSchema('result',  if_not_exists=True))
-    except InvalidSchemaName:
+    except exc.SQLAlchemyError:
         pass
 
 class Location(Base):

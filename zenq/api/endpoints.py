@@ -1,49 +1,50 @@
+import sqlalchemy
 import pandas as pd
 from sqlalchemy import create_engine
-from .tables import Location, Customer, Facts, CustomerFact, Prediction
+from .tables import Location
+#, Customer, Facts, CustomerFact, Prediction
 from sqlalchemy.orm import sessionmaker
 from zenq.clvmodels.modeling import Model
 import pandas as pd
 #import logging
 
 class points():
-    
-
     engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/postgres')
     Session = sessionmaker(bind=engine)
     session = Session()
     model = Model('postgresql://postgres:mysecretpassword@localhost:5432/postgres')
+    
+    def __init__(self):
+        self.df = None
 
-    def read_csv(filename):
-       df = pd.read_csv(filename)
-       return df
+    def read_csv(self, filename):
+        self.df = pd.read_csv(filename)
 
     def insert_location(self, filename):
-    # Read the input CSV file into a DataFrame
-      df = self.read_csv(filename)
+        self.read_csv(filename)
 
-    # Insert the data into the Location table
-      df[['location_id', 'location_name']].drop_duplicates().apply(
-          lambda x: Location(location_id=x['location_id'], location_name=x['location_name']), axis=1
-      ).to_sql('Location', engine, schema='initial', if_exists='append', index=False)
+        # Insert the data into the Location table
+        self.df[['location_id', 'location_name']].drop_duplicates().apply(
+            lambda x: Location(location_id=x['location_id'], location_name=x['location_name']), axis=1
+        ).to_sql('Location', self.engine, schema='initial', if_exists='append', index=False)
 
+ 
     def insert_customer(self, filename):
-    # Read the input CSV file into a DataFrame
-        df = self.read_csv(filename)
+        self.read_csv(filename)
 
-    # Insert the data into the Customer table
-        df[['customer_id', 'gender']].drop_duplicates().apply(
+        # Insert the data into the Customer table
+        self.df[['customer_id', 'gender']].drop_duplicates().apply(
         lambda x: Customer(customer_id=x['customer_id'], gender=x['gender']), axis=1
-        ).to_sql('Customer', engine, schema='initial', if_exists='append', index=False)
+        ).to_sql('Customer', self.engine, schema='initial', if_exists='append', index=False)
 
     def insert_facts(self, filename):
     # Read the input CSV file into a DataFrame
-        df = self.read_csv(filename)
+       self.read_csv(filename)
 
     # Insert the data into the Facts table
-        df[['customer_id','location_id', 'date', 'quantity', 'total_price']].drop_duplicates().apply(
-        lambda x: Facts(customer_id=x['customer_id'], location_id=x['location_id'], date=x['date'], quantity=x['quantity'], total_price=x['total_price']), axis=1
-        ).to_sql('Facts', engine, schema='initial', if_exists='append', index=False)
+       self.df[['customer_id','location_id', 'date', 'quantity', 'total_price']].drop_duplicates().apply(
+       lambda x: Facts(customer_id=x['customer_id'], location_id=x['location_id'], date=x['date'], quantity=x['quantity'], total_price=x['total_price']), axis=1
+       ).to_sql('Facts', self.engine, schema='initial', if_exists='append', index=False)
      
     def insert_customer_fact(self):
     # Call the count_coding function
@@ -61,7 +62,7 @@ class points():
              )),
              axis=1
         )
-        session.commit()
+        self.session.commit()
 
 
     def insert_prediction(self):
@@ -80,6 +81,6 @@ class points():
             )),
             axis=1
         )
-        session.commit()
+        self.session.commit()
  
  # create, deletem,  read

@@ -1,14 +1,15 @@
 #class BGnbd:
 #   def bg(self):
 #       print('b') 
-        
+import sqlalchemy       
 import logging
 from sqlalchemy.orm import load_only
 from lifetimes import BetaGeoFitter
 import pandas as pd
+from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 from sqlalchemy.orm import joinedload
-from zenq.api.tables import Base, Location, Customer, Facts, CustomerFact, Prediction
+from zenq.api.tables import Base, Customer, Facts 
 
 class Model:
     def __init__(self, db_uri):
@@ -51,4 +52,5 @@ class Model:
         cltv_data['repeat_rate'] = cltv_data['customer_id'].map(df_data_group.set_index('customer_id')['repeat_rate'])
         cltv_data['churn_rate'] = 1 - cltv_data['repeat_rate']
         cltv_data['cltv_predicted'] = (cltv_data['total_price'] / cltv_data['purchase_frequency']) * cltv_data['CLV'] * cltv_data['churn_rate']
+        
         return cltv_data
