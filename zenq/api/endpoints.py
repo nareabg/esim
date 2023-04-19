@@ -27,9 +27,33 @@ class points():
 #        self.df[['location_id', 'location_name']].drop_duplicates().apply(
 #            lambda x: Location(location_id=x['location_id'], location_name=x['location_name']), axis=1
 #        ).to_sql('Location', self.engine, schema='initial', if_exists='append', index=False)
- 
+
+    #def insert_location_name(self, filename):
+    # Read the input CSV file into a DataFrame
+    #    self.df = pd.read_csv(filename)
+
+    # Get the list of available columns from the DataFrame
+    #    available_columns = self.df.columns.tolist()
+
+    # Ask the user to choose a column from the available columns
+    #    print("Please choose a column from the following list:")
+    #    for i, col in enumerate(available_columns):
+    #        print(f"{i+1}. {col}")
+    #        column_choice = int(input()) - 1
+
+    # Get the chosen column name
+    #    column_name = available_columns[column_choice]
+
+    # Insert the data into the Location table
+    #    self.df[[column_name]].drop_duplicates().apply(
+    #        lambda x: Location(location_name=x[column_name]),
+    #     axis=1
+    #    ).to_sql('Location', points.engine, schema='initial', if_exists='append', index=False)
+
+     #   print(f"{column_name} data inserted into the Location table's location_name column.")
+
     def insert_location_name(self, filename):
-        # Read the input CSV file into a DataFrame
+    # Read the input CSV file into a DataFrame
         self.df = pd.read_csv(filename)
 
     # Get the list of available columns from the DataFrame
@@ -39,6 +63,8 @@ class points():
         print("Please choose a column from the following list:")
         for i, col in enumerate(available_columns):
             print(f"{i+1}. {col}")
+    
+    # Read the input for the column choice
         column_choice = int(input()) - 1
 
     # Get the chosen column name
@@ -46,8 +72,8 @@ class points():
 
     # Insert the data into the Location table
         self.df[[column_name]].drop_duplicates().apply(
-            lambda x: Location(location_name=x[column_name]),
-            axis=1
+        lambda x: Location(location_name=x[column_name]),
+        axis=1
         ).to_sql('Location', points.engine, schema='initial', if_exists='append', index=False)
 
         print(f"{column_name} data inserted into the Location table's location_name column.")
