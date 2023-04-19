@@ -5,6 +5,9 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import CreateSchema
+from sqlalchemy import Sequence
+from sqlalchemy import text
+
 
 
 engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/postgres')
@@ -27,11 +30,13 @@ with engine.connect() as conn:
         pass
 
 class Location(Base):
+    create_sequence = text('CREATE SEQUENCE location_id_seq START 1;')
+    engine.execute(create_sequence)
     __tablename__ = 'Location'
     __table_args__ = {'schema': 'initial'}
-
+    location_id_seq = Sequence('location_id_seq', start=1, increment=1)
     id = Column(Integer, primary_key=True)
-    location_id = Column(String(50), unique=True, nullable=False)
+    location_id = Column(Integer, Sequence('location_id_seq'), unique=True, nullable=False)
     location_name = Column(String(50), unique=True, nullable=False)
 
     def __repr__(self):
