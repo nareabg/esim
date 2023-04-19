@@ -25,7 +25,7 @@ class points():
 
     def read_csv(self, filename):
         self.df = pd.read_csv(filename)
-        
+ 
     def insert_location_name(self, filename):
         # Read the input CSV file into a DataFrame
         self.df = pd.read_csv(filename)
@@ -33,37 +33,39 @@ class points():
         # Get the list of available columns from the DataFrame
         available_columns = self.df.columns.tolist()
 
-        # Create a dropdown widget for the user to choose a column from the available columns
-        column_dropdown = widgets.Dropdown(options=available_columns, description='Choose column')
+    # Create dropdown widgets for the user to choose columns
+        column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
+                        for col in ['location_id', 'location_name']]
 
-        # Display the dropdown widget
-        display(column_dropdown)
+        # Display the dropdown widgets
+        display(*column_dropdowns)
 
-        # Wait for the user to select a column and click the 'Submit' button
+        # Wait for the user to select columns and click the 'Submit' button
         submit_button = widgets.Button(description='Submit')
         display(submit_button)
         output = widgets.Output()
 
         def on_submit_button_clicked(b):
             with output:
-                # Get the chosen column name
-                column_name = column_dropdown.value
+                # Get the chosen column names
+                column_names = [dropdown.value for dropdown in column_dropdowns]
 
-                # Insert the data into the Location table
-                unique_locations = self.df[[column_name]].drop_duplicates()
-                for index, row in unique_locations.iterrows():
-                    location_name = row[column_name]
+            # Insert the data into the Location table
+            unique_locations = self.df.drop_duplicates(subset=column_names)
+            for index, row in unique_locations.iterrows():
+                    location_id, location_name = row[column_names[0]], row[column_names[1]]
                     try:
                         self.engine.execute(
-                            Location.__table__.insert(),
-                            {'location_name': location_name}
+                        Location.__table__.insert(),
+                        {'location_id': location_id, 'location_name': location_name}
                         )
-                        print(f'Successfully inserted location: {location_name}')
+                        print(f'Successfully inserted location: {location_id}, {location_name}')
                     except IntegrityError:
-                        print(f'Location {location_name} already exists in the table')
+                        print(f'Location {location_id}, {location_name} already exists in the table')
 
         submit_button.on_click(on_submit_button_clicked)
-        display(output)     
+        display(output)
+ 
 
     def insert_customer(self, filename):
         self.read_csv(filename)

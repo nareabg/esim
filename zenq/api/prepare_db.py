@@ -12,7 +12,7 @@ db_name = "postgres"
 DB_URL = f"postgresql://{username}:{password}@{hostname}:{port}/{db_name}"
 
 class db():
-    def main():
+    def main(self):
         print("Initializing the database..", end=" ")
     
         engine = create_engine(DB_URL)

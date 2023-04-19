@@ -30,14 +30,16 @@ with engine.connect() as conn:
         pass
 
 class Location(Base):
-    if not engine.dialect.has_sequence(engine, 'location_id_seq'):
-        create_sequence = text('CREATE SEQUENCE location_id_seq START 1;')
-        engine.execute(create_sequence)
+#    if not engine.dialect.has_sequence(engine, 'location_id_seq'):
+#        create_sequence = text('CREATE SEQUENCE location_id_seq START 1;')
+#        engine.execute(create_sequence)
     __tablename__ = 'Location'
     __table_args__ = {'schema': 'initial'}
-    location_id_seq = Sequence('location_id_seq', start=1, increment=1)
+ #   location_id_seq = Sequence('location_id_seq', start=1, increment=1)
     id = Column(Integer, primary_key=True)
-    location_id = Column(Integer, Sequence('location_id_seq'), unique=True, nullable=False)
+ #   location_id = Column(Integer, Sequence('location_id_seq'), unique=True, nullable=False)
+    location_id = Column(String(50), unique=True, nullable=False)
+
     location_name = Column(String(50), unique=True, nullable=False)
 
     def __repr__(self):
