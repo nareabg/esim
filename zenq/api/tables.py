@@ -5,12 +5,12 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import CreateSchema
-from sqlalchemy import Sequence
+from sqlalchemy import Sequence, UniqueConstraint 
 from sqlalchemy import text
 
 
 
-engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/postgres')
+engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/globbing')
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 metadata = Base.metadata
@@ -29,21 +29,21 @@ with engine.connect() as conn:
     except exc.SQLAlchemyError:
         pass
 
-class Location(Base):
-#    if not engine.dialect.has_sequence(engine, 'location_id_seq'):
-#        create_sequence = text('CREATE SEQUENCE location_id_seq START 1;')
-#        engine.execute(create_sequence)
-    __tablename__ = 'Location'
-    __table_args__ = {'schema': 'initial'}
- #   location_id_seq = Sequence('location_id_seq', start=1, increment=1)
-    id = Column(Integer, primary_key=True)
- #   location_id = Column(Integer, Sequence('location_id_seq'), unique=True, nullable=False)
-    location_id = Column(String(50), unique=True, nullable=False)
+# class Location(Base):
+# #    if not engine.dialect.has_sequence(engine, 'location_id_seq'):
+# #        create_sequence = text('CREATE SEQUENCE location_id_seq START 1;')
+# #        engine.execute(create_sequence)
+#     __tablename__ = 'Location'
+#     __table_args__ = {'schema': 'initial'}
+#  #   location_id_seq = Sequence('location_id_seq', start=1, increment=1)
+#     id = Column(Integer, primary_key=True)
+#  #   location_id = Column(Integer, Sequence('location_id_seq'), unique=True, nullable=False)
+#     location_id = Column(String(50),  nullable=False)
+#     location_name = Column(String(50), nullable=False)
+#     __table_args__ = (UniqueConstraint('location_id', 'location_name', name='uq_location'),)
 
-    location_name = Column(String(50), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f"<Location(id={self.id}, location_id='{self.location_id}', location_name='{self.location_name}')>"
+# #    def __repr__(self):
+# #        return f"<Location(id={self.id}, location_id='{self.location_id}', location_name='{self.location_name}')>"
 
 
 class Customer(Base):
@@ -63,8 +63,10 @@ class Facts(Base):
     __table_args__ = {'schema': 'initial'}
 
     id = Column(Integer, primary_key=True)
-    customer_id = Column(String(50), ForeignKey('initial.Customer.customer_id'), nullable=False)
-    location_id = Column(String(50), ForeignKey('initial.Location.location_id'), nullable=False)
+    customer_id_uniq = Column(String(50), ForeignKey('initial.Customer.id'), nullable=False)
+    location_id = Column(String(50), nullable=False)
+    location_name = Column(String(50), nullable=False)
+    invoice_id = Column(String(50),unique= True, nullable=False)
     date = Column(DateTime, nullable=False)
     quantity = Column(Float, nullable=False)
     total_price = Column(Float, nullable=False)
@@ -74,8 +76,8 @@ class Facts(Base):
     def unit_price(self):
         return self.total_price / self.quantity
 
-    def __repr__(self):
-        return f"<Facts(id={self.id}, customer_id='{self.customer_id}', location_id='{self.location_id}', date='{self.date}', quantity={self.quantity}, total_price={self.total_price}, gender='{self.gender}', unit_price={self.unit_price})>"
+    # def __repr__(self):
+    #     return f"<Facts(id={self.id}, customer_id='{self.customer_id}', location_id='{self.location_id}', date='{self.date}', quantity={self.quantity}, total_price={self.total_price}, gender='{self.gender}', unit_price={self.unit_price})>"
 
 
 class CustomerFact(Base):
@@ -91,8 +93,8 @@ class CustomerFact(Base):
     CLV = Column(Float, nullable=False)
     
 
-    def _repr_(self):
-        return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', date='{self.date}', invocie_id='{self.invoice_id}', quantity='{self.quantity}', price='{self.price}', CLV='{self.CLV}')>"
+    # def _repr_(self):
+    #     return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', date='{self.date}', invocie_id='{self.invoice_id}', quantity='{self.quantity}', price='{self.price}', CLV='{self.CLV}')>"
 
 
 
@@ -109,5 +111,10 @@ class Prediction(Base):
     pred_1month = Column(Float, nullable=False)
 
 
-    def _repr_(self):
-        return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', recency='{self.recency}', frequency='{self.frequency}', monetary='{self.monetary}', T='{self.T}', pred_1month='{self.pred_1month}')>"
+    # def _repr_(self):
+    #     return f"<CustomerFact(id={self.id}, customer_id='{self.customer_id}', recency='{self.recency}', frequency='{self.frequency}', monetary='{self.monetary}', T='{self.T}', pred_1month='{self.pred_1month}')>"
+
+for t in metadata.sorted_tables:
+    print(t.name)
+    
+print("-"*50)

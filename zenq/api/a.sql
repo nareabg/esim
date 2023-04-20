@@ -1,0 +1,2 @@
+dropdb globbing
+createdb globbing

@@ -2,13 +2,24 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
-metadata = Base.metadata
+# import sys
+# sys.path.append("..")
+from .tables import metadata
+
+
+for t in metadata.sorted_tables:
+    print(t.name)
+    
+print("-"*50)
+
+# Base = declarative_base()
+# metadata = Base.metadata
+
 username = "postgres"
 password = "mysecretpassword"
 hostname = "localhost"  # This is the database's service name which is 'database'.
 port = "5432"  # Note that this is the port inside the 'database' container.
-db_name = "postgres"
+db_name = "globbing"
 DB_URL = f"postgresql://{username}:{password}@{hostname}:{port}/{db_name}"
 
 class db():
@@ -27,3 +38,5 @@ class db():
     
 if __name__ == "_main_":
     main()
+    
+ # go to extension press plus and enter info   
