@@ -47,7 +47,7 @@ from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import declarative_base
 import sys
 sys.path.append("..")
-from tables import metadata
+from .tables import metadata
 
 for t in metadata.sorted_tables:
     print(t.name)
