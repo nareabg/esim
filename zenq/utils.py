@@ -9,9 +9,9 @@ def connect():
     conn = psycopg2.connect(
         host="localhost",
         port=5432,
-        user="postgres",
+        user="aua",
         password="mysecretpassword",
-        database="postgres"
+        database="GLOBBING"
     )
     return conn
 
