@@ -56,7 +56,7 @@ class Facts(Base):
         @property
         def unit_price(self):
             return self.total_price / self.quantity
-        
+
         customer = relationship("Customer", backref="Facts")
         # def __repr__(self):
         #     return f"<Facts(id={self.id}, customer_id='{self.customer_id}', location_id='{self.location_id}', date='{self.date}', quantity={self.quantity}, total_price={self.total_price}, gender='{self.gender}', unit_price={self.unit_price})>"

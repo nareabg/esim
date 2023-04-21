@@ -5,7 +5,7 @@ import ipywidgets
 from sqlalchemy import create_engine
 from .tables import Customer, Facts, CustomerFact, Prediction
 from sqlalchemy.orm import sessionmaker
-from zenq.clvmodels.modeling import Model
+# from zenq.clvmodels.modeling import ParetoNBD_CLV_Model
 import pandas as pd
 import ipywidgets as widgets
 from IPython.display import display
@@ -15,7 +15,7 @@ class points():
     engine = create_engine('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
     Session = sessionmaker(bind=engine)
     session = Session()
-    model = Model('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
+    # model = ParetoNBD_CLV_Model('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
     
     def __init__(self, filename):
         self.df = pd.read_csv(filename)
