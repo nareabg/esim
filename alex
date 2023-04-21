@@ -103,15 +103,13 @@ class points():
 
                     try:
                         # add the new Facts instance to the session and commit the changes
-                        self.session.merge(facts)
+                        self.session.add(facts)
                         self.session.commit()
-                        print(f'Successfully inserted facts for customer')
+                        print(f'Successfully inserted facts for customer {customer_id}')
                     except IntegrityError as e:
-                        print(f'Facts already exists in the table')
-                        self.session.rollback()
                         # print the error message if an IntegrityError occurs
-                        # print(f'Error inserting facts: {str(e)}')
-                        # print(f'Facts {row[column_names[0]]}, {row[column_names[1]]}, {row[column_names[2]]}, {row[column_names[3]]}, {row[column_names[4]]}, {row[column_names[5]]} already exists in the table')
+                        print(f'Error inserting facts: {str(e)}')
+                        print(f'Facts {row[column_names[0]]}, {row[column_names[1]]}, {row[column_names[2]]}, {row[column_names[3]]}, {row[column_names[4]]}, {row[column_names[5]]} already exists in the table')
 
             self.session.close()
 
