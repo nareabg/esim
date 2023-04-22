@@ -66,13 +66,14 @@ class ParetoNBDFitter(BaseFitter):
         self.penalizer_coef = penalizer_coef
         
     def count_cltv(self):
-        cltv_data = self.session.query(Customer.customer_id,
+        cltv_data = self.session.query(Facts.customer_id_uniq,
                                     func.DATE_TRUNC('day', func.max(Facts.date)) - func.DATE_TRUNC('day', func.min(Facts.date)),
                                     func.DATE_TRUNC('day', datetime.today()) - func.DATE_TRUNC('day', func.min(Facts.date)),
                                     func.count(Facts.invoice_id),
                                     func.sum(Facts.total_price)).\
-                                    join(Customer).\
-                                    group_by(Customer.customer_id).all()
+                                    group_by(Facts.customer_id_uniq).\
+                                    having(func.count(Facts.invoice_id) > 1).\
+                                    all()
 
         # cltv_data = pd.DataFrame(cltv_data, columns=['customer_id', 'total_price'])
         # df_data_group = self.count_coding()
