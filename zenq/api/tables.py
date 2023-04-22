@@ -10,8 +10,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import relationship
 
 
-
-engine = create_engine('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
+db_uri = 'postgresql://aua:mysecretpassword@localhost:5432/GLOBBING'
+engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 metadata = Base.metadata
