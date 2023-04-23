@@ -62,6 +62,15 @@ db_name = "GLOBBING"
 DB_URL = f"postgresql://{username}:{password}@{hostname}:{port}/{db_name}"
 
 class db():
+    def connect_to_db(self, username, password, db_name, hostname = 'localhost', port = 5432):
+        # username = "aua"
+        # password = "mysecretpassword"
+        # hostname = "localhost"  
+        # port = "5432"  
+        # db_name = "GLOBBING"
+        DB_URL = f"postgresql://{username}:{password}@{hostname}:{port}/{db_name}"
+
+        
     def main(self):
         print("Initializing the database..", end=" ")
     

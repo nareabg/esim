@@ -37,7 +37,7 @@ class Facts(Base):
         __table_args__ = {'schema': 'initial'}
 
         id = Column(Integer, primary_key=True)
-        customer_id = Column(String(50), unique=True, nullable=False)
+        customer_id = Column(String(50), nullable=False)
         gender = Column(String(10))
         location_id = Column(String(50), nullable=False)
         location_name = Column(String(50), nullable=False)
