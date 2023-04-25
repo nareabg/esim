@@ -12,7 +12,6 @@ import sys
 sys.path.append("..")
 from tables import Facts
 
-print("-"*50)
 print("Enter your database credentials")
 username = input("Username: ")
 password = input("Password: ")
