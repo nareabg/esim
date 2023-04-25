@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import declarative_base
 import sys
+import os
 sys.path.append("..")
 from tables import Facts
 
@@ -32,7 +33,20 @@ class db():
         metadata.create_all(bind=engine)
     
         print("done")
-    
+
+        current_dir = os.getcwd()
+
+        # Change the current working directory to the module directory
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(module_dir)
+
+        # Save db_uri to config.py file
+        with open('config.py', 'w') as f:
+            f.write(f"db_uri = '{db_uri}'\n")
+
+        # Change the current working directory back to the original directory
+        os.chdir(current_dir)
+            
 if __name__ == "__main__":
     mydb = db()
     mydb.main()

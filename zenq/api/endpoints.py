@@ -3,16 +3,17 @@ import pandas as pd
 import IPython
 import ipywidgets
 from sqlalchemy import create_engine
-from .tables import  Facts #, CustomerFact, Prediction
+from tables import  Facts #, CustomerFact, Prediction
 from sqlalchemy.orm import sessionmaker
 # from zenq.clvmodels.modeling import ParetoNBD_CLV_Model
 import pandas as pd
 import ipywidgets as widgets
 from IPython.display import display
 from sqlalchemy.exc import IntegrityError
+from config import db_uri
 
 class points():
-    engine = create_engine('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
+    engine = create_engine(db_uri)
     Session = sessionmaker(bind=engine)
     session = Session()
     # model = ParetoNBD_CLV_Model('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
