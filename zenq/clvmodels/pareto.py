@@ -85,9 +85,12 @@ class Model():
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         
         return rfm
-    def fit():
-        
-        pass
+    def fit(self):
+        cltv_df = self.cltv_df() 
+        model = lifetimes.ParetoNBDFitter()
+        fittinng= model.fit(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
+        return fitting
+         
     def output():
         pass
     def to_sql():
