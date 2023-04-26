@@ -13,6 +13,8 @@ from sqlalchemy import func
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 from sqlalchemy.orm import joinedload, sessionmaker
+from lifetimes import ParetoNBDFitter 
+from lifetimes.utils import summary_data_from_transaction_data
 from zenq.api.tables import Base, Facts 
 import pandas as pd
 import numpy as np
@@ -74,17 +76,6 @@ class Model():
                                     having(func.count(Facts.invoice_id) > 1).\
                                     all()
                                     
-        # cltv_df = pd.DataFrame(cltv_df, columns=['customer_id','min_date','recency', 'T', 'frequency', 'monetary'])
-        # # cltv_df['monetary'] = cltv_df['monetary'].astype(int)
-        # cltv_df['T'] = cltv_df['T'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)              
-        # cltv_df['recency'] = cltv_df['recency'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
-        # one_time_buyers = round(sum(cltv_df['frequency'] == 0)/float(len(cltv_df))*(100),2)
-        # print('Percentage of customers that only bought onece', one_time_buyers, '%')
-        # #ErrorHandling Raise Error
-        # cltv_df = cltv_df[cltv_df["monetary"] > 0]
-        # cltv_df = cltv_df[cltv_df["frequency"] > 0]
-        # cltv_df = cltv_df[cltv_df["recency"] > 0]
-        # cltv_df = cltv_df[cltv_df["T"] > 0]
         cltv_df = pd.DataFrame(cltv_df, columns=['customer_id','min_date', 'recency', 'T', 'frequency', 'monetary'])
         one_time_buyers = round(sum(cltv_df['frequency'] == 0)/float(len(cltv_df))*(100),2)
         print('Percentage of customers that only bought onece', one_time_buyers, '%')
@@ -133,18 +124,19 @@ class Model():
         frequency = cltv_df['frequency']
         recency = cltv_df['recency']
         T = cltv_df['T']
-        monetary_value = cltv_df['monetary']
-        _check_inputs(frequency, recency, T, monetary_value)
+        _check_inputs(frequency, recency, T)
         # Fit Pareto/NBD model
         model = ParetoNBDFitter(penalizer_coef=0.0)
-        model.fit(frequency, recency, T, monetary_value)
+        model.fit(frequency, recency, T)
         self.params_ = pd.Series({
         'r':  model.params_['r'],
         'alpha':  model.params_['alpha'],
         's':  model.params_['s'],
         'beta':  model.params_['beta']
         })
-        return model, self.params_
+        return model 
+    
+    
     def predict_paretonbd(self, num_periods=1):
         """
         Predicts the expected number of repeat purchases and the expected average value of those purchases
@@ -155,11 +147,36 @@ class Model():
         frequency = cltv_df['frequency']
         recency = cltv_df['recency']
         T = cltv_df['T']
-        conditional_expected_number_of_purchases_up_to_time
-        conditional_probability_alive
-        predicted_values = model.predict(num_periods, frequency, recency, T)
-        expected_num_purchases = predicted_values.iloc[-1]['predicted_purchases']
-        expected_avg_value = predicted_values.iloc[-1]['predicted_average_profit']
-        return expected_num_purchases, expected_avg_value
+        freq = 'D' # days
+        number_of_days_list = [30, 90, 180, 360]
 
+        result_df = pd.DataFrame({'Customer': cltv_df['customer_id']})
+
+        for days in number_of_days_list:
+            cltv_df[f'expected_purchases_{days}'] = model.conditional_expected_number_of_purchases_up_to_time(
+                days,
+                cltv_df['frequency'].values,
+                cltv_df['recency'].values,
+                cltv_df['T'].values
+            )
+            result_df[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
+
+        return result_df
+
+    def customer_is_alive(self):
+        model = self.fit_paretonbd()
+        cltv_df = self.cltv_df()
+        frequency = cltv_df['frequency']
+        recency = cltv_df['recency']
+        T = cltv_df['T']
+        cltv_df['probability_customer_alive'] = model.conditional_probability_alive(
         
+        cltv_df['frequency'].values, cltv_df['recency'].values, cltv_df['T'].values)
+        result_df = pd.DataFrame({
+            'Customer': cltv_df['customer_id'],
+            'Probability of being Alive': cltv_df['probability_customer_alive']
+        })
+        
+        return result_df
+
+   
