@@ -53,6 +53,8 @@ class Model():
         cltv_df['recency'] = cltv_df['recency'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
         cltv_df = cltv_df[cltv_df["recency"] > 0]
         cltv_df = cltv_df[cltv_df["T"] > 0]
+        
+        cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
 
         return cltv_df
         
@@ -80,9 +82,7 @@ class Model():
         return rfm
     
     def fit_paretonbd(self):
-        """
-        Fits Pareto/NBD model using Lifetimes library and returns the fitted model object.
-        """
+
         cltv_df = self.cltv_df()
         print(cltv_df)
         # Check inputs for Pareto/NBD model
@@ -93,13 +93,20 @@ class Model():
         # Fit Pareto/NBD model
         model = ParetoNBDFitter(penalizer_coef=0.0)
         model.fit(frequency, recency, T)
+
+        return model 
+    
+    def model_params(self):
+        
+        model = self.fit_paretonbd()
         self.params_ = pd.Series({
         'r':  model.params_['r'],
         'alpha':  model.params_['alpha'],
         's':  model.params_['s'],
         'beta':  model.params_['beta']
         })
-        return model 
+        
+        return self.params_
     
     
     def predict_paretonbd(self, num_periods=1):
@@ -111,7 +118,7 @@ class Model():
         freq = 'D' # days
         number_of_days_list = [30, 90, 180, 360]
 
-        result_df = pd.DataFrame({'Customer': cltv_df['customer_id']})
+        Prediction = pd.DataFrame({'Customer': cltv_df['customer_id']})
 
         for days in number_of_days_list:
             cltv_df[f'expected_purchases_{days}'] = model.conditional_expected_number_of_purchases_up_to_time(
@@ -120,9 +127,9 @@ class Model():
                 cltv_df['recency'].values,
                 cltv_df['T'].values
             )
-            result_df[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
+            Prediction[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
 
-        return result_df
+        return Prediction
 
     def customer_is_alive(self):
         model = self.fit_paretonbd()
@@ -133,11 +140,11 @@ class Model():
         cltv_df['probability_customer_alive'] = model.conditional_probability_alive(
         
         cltv_df['frequency'].values, cltv_df['recency'].values, cltv_df['T'].values)
-        result_df = pd.DataFrame({
+        CustomerAlive = pd.DataFrame({
             'Customer': cltv_df['customer_id'],
             'Probability of being Alive': cltv_df['probability_customer_alive']
         })
         
-        return result_df
+        return CustomerAlive
 
    
