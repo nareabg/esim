@@ -29,7 +29,18 @@ class Model():
         Base.metadata.create_all(self.engine)
         self.session = sessionmaker(bind=self.engine)()
 
+        cltv_df = self.cltv_df()
+        cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
 
+        predict_paretonbd = self.predict_paretonbd()
+        predict_paretonbd.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
+       
+        customer_is_alive = self.customer_is_alive()
+        customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
+       
+        # cltv_df = self.cltv_df()
+        # cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
+           
         
     def cltv_df(self):
         # max_date = func.max(Facts.date)
@@ -54,8 +65,7 @@ class Model():
         cltv_df = cltv_df[cltv_df["recency"] > 0]
         cltv_df = cltv_df[cltv_df["T"] > 0]
         
-        cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
-
+ 
         return cltv_df
         
     def rfm(self):
@@ -131,6 +141,7 @@ class Model():
 
         return Prediction
 
+ 
     def customer_is_alive(self):
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
@@ -147,4 +158,4 @@ class Model():
         
         return CustomerAlive
 
-   
+ 

@@ -11,7 +11,7 @@ from sqlalchemy.orm import declarative_base
 import sys
 import os
 sys.path.append("..")
-from tables import Facts
+from .tables import Facts
 
 print("Enter your database credentials")
 username = input("Username: ")
