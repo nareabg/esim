@@ -1,54 +1,23 @@
-# -*- coding: utf-8 -*-
-"""Pareto/NBD model."""
-
 from __future__ import print_function
 from __future__ import division
-import sqlalchemy       
+from zenq.api.tables import Base, Facts 
+from zenq.api.config import db_uri
+import sqlalchemy 
+from sqlalchemy.orm import load_only, relationship, joinedload, sessionmaker
+from sqlalchemy import func, create_engine      
 import logging
 import lifetimes
-from sqlalchemy.orm import load_only, relationship
-from lifetimes import BetaGeoFitter
-import pandas as pd
-from sqlalchemy import func
-from sqlalchemy import create_engine
-from datetime import datetime, timedelta
-from sqlalchemy.orm import joinedload, sessionmaker
-from lifetimes import ParetoNBDFitter 
-from lifetimes.utils import summary_data_from_transaction_data
-from zenq.api.tables import Base, Facts 
-import pandas as pd
-import numpy as np
-# -*- coding: utf-8 -*-
-"""Pareto/NBD model."""
-
-
-from datetime import datetime, timedelta
-
-import pandas as pd
+from lifetimes import BetaGeoFitter, ParetoNBDFitter
+from lifetimes.utils import summary_data_from_transaction_data, _check_inputs, _scale_time
+from lifetimes.generate_data import pareto_nbd_model
 import numpy as np
 from numpy import log, exp, logaddexp, asarray, any as npany
+import pandas as pd
 from pandas import DataFrame
+from datetime import datetime, timedelta
 from scipy.special import gammaln, hyp2f1, betaln, logsumexp
 from scipy.optimize import minimize
-from lifetimes import BetaGeoFitter, ParetoNBDFitter
-from lifetimes.utils import _check_inputs, _scale_time
-from lifetimes.generate_data import pareto_nbd_model
-
-from sqlalchemy import create_engine, func
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import load_only, relationship, joinedload
-from zenq.api.tables import Base, Facts 
-from zenq.api.config import db_uri
-from numpy import log, exp, logaddexp, asarray, any as npany
-from pandas import DataFrame
-from scipy.special import gammaln, hyp2f1, betaln
-from scipy.special import logsumexp
-from scipy.optimize import minimize
-from lifetimes import ParetoNBDFitter
-
-from lifetimes.utils import _check_inputs, _scale_time
-from lifetimes.generate_data import pareto_nbd_model
-from zenq.api.config import db_uri
+ 
 
 class Model():
 
