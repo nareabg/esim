@@ -28,9 +28,7 @@ class Model():
         self.engine = create_engine(db_uri)
         Base.metadata.create_all(self.engine)
         self.session = sessionmaker(bind=self.engine)()
-        """
-        Initialization, set penalizer_coef.
-        """
+
 
         
     def cltv_df(self):
@@ -57,10 +55,7 @@ class Model():
         cltv_df = cltv_df[cltv_df["T"] > 0]
 
         return cltv_df
- 
-
-        return cltv_df
-       
+        
     def rfm(self):
         cltv_df = self.cltv_df() 
         rfm = pd.DataFrame()
@@ -83,6 +78,7 @@ class Model():
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         
         return rfm
+    
     def fit_paretonbd(self):
         """
         Fits Pareto/NBD model using Lifetimes library and returns the fitted model object.
@@ -107,10 +103,6 @@ class Model():
     
     
     def predict_paretonbd(self, num_periods=1):
-        """
-        Predicts the expected number of repeat purchases and the expected average value of those purchases
-        for the next `num_periods` periods using the fitted Pareto/NBD model.
-        """
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         frequency = cltv_df['frequency']
