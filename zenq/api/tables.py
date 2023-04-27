@@ -109,30 +109,3 @@ class Facts(Base):
         
        
        
-    # __tablename__ = 'CLTV'
-    # __table_args__ = {'schema': 'result'}
-    # id = Column(Integer, primary_key=True)
-    # customer_id = Column(String(50), nullable=False)
-    # min_date = Column(DateTime, nullable=False)
-    # recency = Column(Integer, nullable=False)
-    # T = Column(Integer, nullable=False)
-    # frequency = Column(Integer, nullable=False)
-    # monetary = Column(Float, nullable=False)
- 
-    # __tablename__ = 'CustomerAlive'
-    # __table_args__ = {'schema': 'result'}
-    # id = Column(Integer, primary_key = True)
-    # Customer = Column(String(50), nullable=False)
-    # Probability_of_being_Alive = Column(Float, nullable=False)
-    
-    # _tablename_ = 'Prediction'
-    # _table_args_ = {'schema': 'result'}
-    # id = Column(Integer, primary_key=True)
-    # Customer = Column(String(50), nullable=False)
-    # Expected_Purchases_30 = Column(Float, nullable = False)
-    # Expected_Purchases_90 = Column(Float, nullable = False)
-    # Expected_Purchases_180 = Column(Float, nullable = False)
-    # Expected_Purchases_360 = Column(Float, nullable = False)
-
-
- 
