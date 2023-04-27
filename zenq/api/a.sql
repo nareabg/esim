@@ -1,2 +1,0 @@
-dropdb globbing
-createdb globbing
