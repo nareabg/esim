@@ -84,7 +84,31 @@ class Facts(Base):
         Expected_Purchases_90 = Column(Float, nullable=False)
         Expected_Purchases_180 = Column(Float, nullable=False)
         Expected_Purchases_360 = Column(Float, nullable=False)
-
+        
+    class RFMScore(Base):
+        
+        __tablename__ = 'RFMScore'
+        __table_args__ = {'schema': 'result'}
+        id = Column(Integer, primary_key=True)
+        customer_id = Column(String(50), nullable=False)
+        recency_score = Column(Integer, nullable=False)
+        frequency_score = Column(Integer, nullable=False)
+        monetary_score=Column(Integer, nullable=False)
+        RFM_SCORE = Column(Integer, nullable=False)
+        segment = Column(String(50), nullable=False)
+        
+    class ParetoParameters(Base):
+                    
+        __tablename__ = 'ParetoParameters'
+        __table_args__ = {'schema': 'result'}        
+        id = Column(Integer, primary_key=True)
+        r = Column(Float, nullable=False)
+        alpha = Column(Float, nullable=False)
+        s = Column(Float, nullable=False)
+        beta = Column(Float, nullable=False)
+        
+       
+       
     # __tablename__ = 'CLTV'
     # __table_args__ = {'schema': 'result'}
     # id = Column(Integer, primary_key=True)

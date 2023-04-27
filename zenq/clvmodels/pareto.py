@@ -38,9 +38,11 @@ class Model():
         customer_is_alive = self.customer_is_alive()
         customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
        
-        # cltv_df = self.cltv_df()
-        # cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
-           
+        model_params = self.model_params()
+        model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
+        
+        rfm = self.rfm()   
+        rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
         
     def cltv_df(self):
         # max_date = func.max(Facts.date)
@@ -71,6 +73,7 @@ class Model():
     def rfm(self):
         cltv_df = self.cltv_df() 
         rfm = pd.DataFrame()
+        rfm['customer_id'] = cltv_df['customer_id']
         rfm["recency_score"] = pd.qcut(cltv_df['recency'], 5, labels=[5, 4, 3, 2, 1])
         rfm["frequency_score"] = pd.qcut(cltv_df["frequency"].rank(method="first"), 5, labels=[1, 2, 3, 4, 5])
         rfm["monetary_score"] = pd.qcut(cltv_df["monetary"], 5, labels=[1, 2, 3, 4, 5])
@@ -115,9 +118,14 @@ class Model():
         's':  model.params_['s'],
         'beta':  model.params_['beta']
         })
+        model_params = pd.DataFrame({
+        'r': [self.params_['r']],
+        'alpha': [self.params_['alpha']],
+        's': [self.params_['s']],
+        'beta': [self.params_['beta']]
+        })
+        return model_params
         
-        return self.params_
-    
     
     def predict_paretonbd(self, num_periods=1):
         model = self.fit_paretonbd()
