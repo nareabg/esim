@@ -1,51 +1,87 @@
 openapi: 3.0.0
 info:
-  title: "API for connecting to db"
-  description: "An API for connecting to a database that runs inside another container"
-  version: "1.0.0"
-  
+  title: My API
+  version: "1.0"
+
 servers:
   - url: "/"
-  
+
 paths:
-  /:
-    get:
-      operationId: "endpoints.home"
-      tags:
-        - "home"
-      summary: "Prints the purpose of the app."
-      responses:
-        "200":
-          description: "Successfully printed the message."
-  /tuple:
+
+  /points:
     post:
-      operationId: "endpoints.points.read_csv"
-      tags:
-        - "table entry"
-      summary: "Create a new entry."
-      description: "Creates a new entry in db."
+      operationId: "endpoints.insert_facts"
+      summary: Upload and insert data from a CSV file
       parameters:
-        - name: name
+        - name: filename
           in: query
-          description: "name of the person"
-          schema:
+          description: ""
+          schema: 
             type: string
           required: True
-        - name: age
+      responses:
+        '200':
+          description: OK
+
+  /points/facts:
+    post:
+      operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
+      summary: Insert data into the Facts table
+      parameters:
+        - name: filename
           in: query
-          description: "age of the person"
-          schema:
-            type: integer
+          description: ""
+          schema: 
+            type: string
           required: True
       responses:
         '200':
-          description: "OK"
-    get:
-      operationId: "endpoints.get_all_data"
-      tags:
-        - "table entry"
-      summary: "Queries the whole data."
-      description: "Returns the whole data."
-      responses:
-        '200':
-          description: "OK"
+          description: OK
+
+
+
+# paths:
+#   /points:
+#     post:
+#       summary: Upload and insert data from a CSV file
+#       requestBody:
+#         content:
+#           text/csv:
+#             schema:
+#               type: string
+#               format: binary
+#       responses:
+#         '200':
+#           description: OK
+          
+  # /points/facts:
+  #   post:
+  #     summary: Insert data into the Facts table
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               customer_id:
+  #                 type: string
+  #               gender:
+  #                 type: string
+  #               invoice_id:
+  #                 type: string
+  #               date:
+  #                 type: string
+  #               quantity:
+  #                 type: number
+  #               total_price:
+  #                 type: number
+  #             required:
+  #               - customer_id
+  #               - gender
+  #               - invoice_id
+  #               - date
+  #               - quantity
+  #               - total_price
+  #       responses:
+  #         '200':
+  #           description: OK
