@@ -1,4 +1,4 @@
-Customer,Date,Product weight,Product price,Gender,Branch/Locker,Location,InvoiceId
+Customer,Date,Product_weight,Product_price,Gender,Branch/Locker,Location,InvoiceId
 RXZ350571,2022-09-01,4.4,24200.000000000004,M,G-Location 1,Yerevan,INV-101
 ZFZ316415,2022-09-01,5.86,35160.0,M,G-Location 2,Yerevan,INV-102
 KPR936365,2022-09-01,3.76,30080.0,M,G-Location 2,Yerevan,INV-103

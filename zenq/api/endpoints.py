@@ -1,9 +1,11 @@
 import sqlalchemy
 import pandas as pd
 import IPython
+from sqlalchemy.exc import IntegrityError
+
 import ipywidgets
 from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc
-
+from datetime import datetime
 from sqlalchemy import create_engine
 from tables import  Facts #, CustomerFact, Prediction
 from sqlalchemy.orm import sessionmaker
@@ -14,228 +16,69 @@ from IPython.display import display
 from sqlalchemy.exc import IntegrityError
 from config import db_uri
 
-# class points():
-#     engine = create_engine(db_uri)
-#     Session = sessionmaker(bind=engine)
-#     session = Session()
-#     #model = ParetoNBD_CLV_Model('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
-    
-#     def __init__(self, filename):
-#         self.df = pd.read_csv(filename)
-
- 
-#     def insert_facts(self):
-#             # Get the list of available columns from the DataFrame
-#             available_columns = self.df.columns.tolist()
-
-#             # Create dropdown widgets for the user to choose columns
-#             column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
-#                                 for col in ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']]
-
-#             # Display the dropdown widgets
-#             display(*column_dropdowns)
-
-#             # Wait for the user to select columns and click the 'Submit' button
-#             submit_button = widgets.Button(description='Submit')
-#             display(submit_button)
-#             output = widgets.Output()
-
-#             def on_submit_button_clicked(b):
-#                 with output:
-#                     # Get the chosen column names
-#                     column_names = [dropdown.value for dropdown in column_dropdowns]
-
-#                     # Insert the data into the Location table
-#                     unique_customers = self.df.drop_duplicates(subset=column_names)
-#                     for index, row in unique_customers.iterrows():
-#                         customer_id, gender, invoice_id, date, quantity, total_price = row[column_names[0]], row[column_names[1]], row[column_names[2]], row[column_names[3]], row[column_names[4]], row[column_names[5]]
-#                         try:
-#                             self.engine.execute(
-#                                 Facts.__table__.insert(),
-#                                 {'customer_id': customer_id, 'gender': gender, 'invoice_id':invoice_id, 'date':date, 'quantity':quantity, 'total_price': total_price }
-#                             )
-#                             print(f'Successfully inserted row: {customer_id}, {gender}, {invoice_id}, {date}, {quantity}, {total_price} ')
-#                         except IntegrityError:
-#                             print(f'Customer {invoice_id} already exists in the table')
-#                 self.engine.dispose()
-
-#             submit_button.on_click(on_submit_button_clicked)
-#             display(output)
-            
-#     def top_10_customer_expected_purchase_in_30_days(self):
-#         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
-#                 .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
-#                 .limit(10)\
-#                 .all()
-#         top_customers = pd.DataFrame(top_customers, columns=['customer_id','expected_purchase'])
-#         return top_customers
-
-
-
-
-
 
 engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()
 #model = ParetoNBD_CLV_Model('postgresql://aua:mysecretpassword@localhost:5432/GLOBBING')
 
+# def insert_facts(customer_id, gender, invoice_id, date, quantity, total_price, filename):
+#     # Read the CSV file into a pandas DataFrame
+#     df = pd.read_csv(filename)
+#     print(f"Inserting facts for customer {customer_id} from file {filename}")
 
+#     # Loop through the rows of the DataFrame and insert each one into the database
+#     for i, row in df.iterrows():
+#         fact = Facts(
+#             customer_id=row[customer_id],
+#             gender=row[gender],
+#             invoice_id=row[invoice_id],
+#             date=row[date],
+#             quantity=row[quantity],
+#             total_price=row[total_price]
+#         )
+#         try:
+#             session.add(fact)
+#             session.commit()
+#         except IntegrityError:
+#             session.rollback()
+#             print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
+#             continue
+#     print("Finished inserting facts")
+#     # Close the session
+#     session.close()
+def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, total_price):
+    # Read the CSV file into a pandas DataFrame
+    df = pd.read_csv(filename)
+    print(f"Inserting facts for customer {customer_id} from file {filename}")
 
-def insert_facts(filename):
-        df = pd.read_csv(filename)
-        # Get the list of available columns from the DataFrame
-        available_columns = self.df.columns.tolist()
+    # Loop through the rows of the DataFrame and insert each one into the database
+    for i, row in df.iterrows():
+        fact = Facts(
+            customer_id=row[customer_id],
+            gender=row[gender],
+            invoice_id=row[invoice_id],
+            date=row[date],
+            quantity=row[quantity],
+            total_price=row[total_price]
+        )
+        try:
+            session.add(fact)
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
+            continue
+    print("Finished inserting facts")
+    # Close the session
+    session.close()
 
-        # Create dropdown widgets for the user to choose columns
-        column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
-                            for col in ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']]
-
-        # Display the dropdown widgets
-        display(*column_dropdowns)
-
-        # Wait for the user to select columns and click the 'Submit' button
-        submit_button = widgets.Button(description='Submit')
-        display(submit_button)
-        output = widgets.Output()
-
-        def on_submit_button_clicked(b):
-            with output:
-                # Get the chosen column names
-                column_names = [dropdown.value for dropdown in column_dropdowns]
-
-                # Insert the data into the Location table
-                unique_customers = self.df.drop_duplicates(subset=column_names)
-                for index, row in unique_customers.iterrows():
-                    customer_id, gender, invoice_id, date, quantity, total_price = row[column_names[0]], row[column_names[1]], row[column_names[2]], row[column_names[3]], row[column_names[4]], row[column_names[5]]
-                    try:
-                        self.engine.execute(
-                            Facts.__table__.insert(),
-                            {'customer_id': customer_id, 'gender': gender, 'invoice_id':invoice_id, 'date':date, 'quantity':quantity, 'total_price': total_price }
-                        )
-                        print(f'Successfully inserted row: {customer_id}, {gender}, {invoice_id}, {date}, {quantity}, {total_price} ')
-                    except IntegrityError:
-                        print(f'Customer {invoice_id} already exists in the table')
-            self.engine.dispose()
-
-        submit_button.on_click(on_submit_button_clicked)
-        display(output)
         
 def top_10_customer_expected_purchase_in_30_days(filename):
     df = pd.read_csv(filename)
-    top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
+    top_customers = session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
             .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
             .limit(10)\
             .all()
     top_customers = pd.DataFrame(top_customers, columns=['customer_id','expected_purchase'])
     return top_customers
-
-
-    # Location, Customer
-    
-    
-    
-    
-    
-    
-    
-         
-            
-    # def insert_facts(self):
-    #     # Get the list of available columns from the DataFrame
-    #     available_columns = self.df.columns.tolist()
-
-    #     # Create dropdown widgets for the user to choose columns
-    #     column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
-    #                         for col in ['location_id', 'location_name', 'invoice_id', 'date', 'quantity', 'total_price']]
-
-    #     # Display the dropdown widgets
-    #     display(*column_dropdowns)
-
-    #     # Wait for the user to select columns and click the 'Submit' button
-    #     submit_button = widgets.Button(description='Submit')
-    #     display(submit_button)
-    #     output = widgets.Output()
-
-    #     def on_submit_button_clicked(b):
-    #         with output:
-    #             # Get the chosen column names
-    #             column_names = [dropdown.value for dropdown in column_dropdowns]
-
-    #             # Insert the data into the Facts table
-    #             for idx, (index, row) in enumerate(self.df.iterrows()):
-    #                 # get the customer_id from the input data
-    #                 # customer_id =  row[column_names[0]]
-    #                 customer_id =  self.session.query(Customer).all()
-    #                 # print(customer_id[idx].id)
-    #                 # print(self.session.query(Customer))
-    #                 # query the database for the corresponding Customer instance
-    #                 # customer = self.session.query(Customer).filter_by(customer_id=customer_id[idx].id).all()
-    #                 # print(customer)
-    #                 # create a new Facts instance and set its customer attribute
-    #                 facts = Facts(
-    #                     customer_id_uniq=customer_id[idx].id,
-    #                     location_id=row[column_names[0]],
-    #                     location_name=row[column_names[1]],
-    #                     invoice_id=row[column_names[2]],
-    #                     date=row[column_names[3]],
-    #                     quantity=row[column_names[4]],
-    #                     total_price=row[column_names[5]]
-    #                 )
-
-    #                 try:
-    #                     # add the new Facts instance to the session and commit the changes
-    #                     self.session.merge(facts)
-    #                     self.session.commit()
-    #                     print(f'Successfully inserted facts for customer')
-    #                 except IntegrityError as e:
-    #                     print(f'Facts already exists in the table')
-    #                     self.session.rollback()
-    #                     # print the error message if an IntegrityError occurs
-    #                     # print(f'Error inserting facts: {str(e)}')
-    #                     # print(f'Facts {row[column_names[0]]}, {row[column_names[1]]}, {row[column_names[2]]}, {row[column_names[3]]}, {row[column_names[4]]}, {row[column_names[5]]} already exists in the table')
-
-    #         self.session.close()
-
-    #     submit_button.on_click(on_submit_button_clicked)
-    #     display(output)
-        
-# def insert_facts(self):
-    #         # Get the list of available columns from the DataFrame
-    #         available_columns = self.df.columns.tolist()
-
-    #         # Create dropdown widgets for the user to choose columns
-    #         column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
-    #                             for col in ['location_id', 'location_name', 'invoice_id', 'date', 'quantity', 'total_price']]
-
-    #         # Display the dropdown widgets
-    #         display(*column_dropdowns)
-
-    #         # Wait for the user to select columns and click the 'Submit' button
-    #         submit_button = widgets.Button(description='Submit')
-    #         display(submit_button)
-    #         output = widgets.Output()
-             
-            # def on_submit_button_clicked(b):
-            #     with output:
-            #         # Get the chosen column names
-            #         column_names = [dropdown.value for dropdown in column_dropdowns]
-
-            #         # Insert the data into the Location table
-            #         unique_customers = self.df.drop_duplicates(subset=column_names)
-            #         for index, row in unique_customers.iterrows():
-            #             location_id, location_name, invoice_id, date, quantity, total_price  = row[column_names[0]], row[column_names[1]], row[column_names[2]], row[column_names[3]], row[column_names[4]], row[column_names[5]]
-            #             try:
-            #                 self.engine.execute(
-            #                     Facts.__table__.insert(),
-            #                     {'location_id': location_id, 'location_name': location_name, 'invoice_id': invoice_id, 'date': date, 'quantity': quantity, 'total_price': total_price}
-            #                 )
-            #                 print(f'Successfully inserted location: {location_id}, {location_name}, {invoice_id}, {date}, {quantity}, {total_price}')
-            #             except IntegrityError:
-            #                 print(f'Error inserting facts: {str(e)}')
-            #                 print(f'Facts {location_id}, {location_name}, {invoice_id}, {date}, {quantity}, {total_price} already exists in the table')
-            #     self.engine.dispose()
-
-            # submit_button.on_click(on_submit_button_clicked)
-            # display(output)
- 

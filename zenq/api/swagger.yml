@@ -1,42 +1,153 @@
-openapi: 3.0.0
-info:
-  title: My API
-  version: "1.0"
+# openapi: 3.0.0
+# info:
+#   title: My API
+#   version: "1.0"
 
-servers:
-  - url: "/"
+# servers:
+#   - url: "/"
 
-paths:
+# paths:
 
-  /points:
-    post:
-      operationId: "endpoints.insert_facts"
-      summary: Upload and insert data from a CSV file
-      parameters:
-        - name: filename
-          in: query
-          description: ""
-          schema: 
-            type: string
-          required: True
-      responses:
-        '200':
-          description: OK
+#   /points:
+#     post:
+#       operationId: "endpoints.insert_facts"
+#       summary: Upload and insert data from a CSV file
+#       parameters:
+#         - name: filename
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#           required: True
+#         - name: gender
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#           required: True
+#         - name: invoice_id
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#           required: True
+#         - name: date
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#             format: date
+#           required: True
+#         - name: quantity
+#           in: query
+#           description: ""
+#           schema: 
+#             type: number
+#             format: float
+#           required: True
+#         - name: total_price
+#           in: query
+#           description: ""
+#           schema: 
+#             type: number
+#             format: float
+#           required: True    
+#       responses:
+#         '200':
+#           description: OK
 
-  /points/facts:
-    post:
-      operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
-      summary: Insert data into the Facts table
-      parameters:
-        - name: filename
-          in: query
-          description: ""
-          schema: 
-            type: string
-          required: True
-      responses:
-        '200':
-          description: OK
+# openapi: 3.0.0
+# info:
+#   title: My API
+#   version: "1.0"
+
+# servers:
+#   - url: "/"
+
+# paths:
+
+#   /points:
+#     post:
+#       operationId: "endpoints.insert_facts"
+#       summary: Upload and insert data from a CSV file
+#       requestBody:
+#         required: true
+#         content:
+#           multipart/form-data:
+#             schema:
+#               type: object
+#               properties:
+#                 file:
+#                   type: string
+#                   # format: binary
+#                 gender:
+#                   type: string
+#                 invoice_id:
+#                   type: string
+#                 date:
+#                   type: string
+#                   format: date
+#                 quantity:
+#                   type: string
+#                   # format: float
+#                 total_price:
+#                   type: string
+#                   # format: float
+#       responses:
+#         '200':
+#           description: OK
+
+
+  # /points/facts:
+  #   post:
+  #     operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
+  #     summary: Insert data into the Facts table
+  #     parameters:
+  #       - name: filename
+  #         in: query
+  #         description: ""
+  #         schema: 
+  #           type: string
+  #         required: True
+  #       - name: customer_id
+  #         in: query
+  #         description: ""
+  #         schema: 
+  #           type: string
+  #         required: True
+        # - name: gender
+        #   in: query
+        #   description: ""
+        #   schema: 
+        #     type: string
+        #   required: True
+        # - name: invoice_id
+        #   in: query
+        #   description: ""
+        #   schema: 
+        #     type: string
+        #   required: True
+        # - name: date
+        #   in: query
+        #   description: ""
+        #   schema: 
+        #     type: string
+        #     format: date
+        #   required: True
+        # - name: quantity
+        #   in: query
+        #   description: ""
+        #   schema: 
+        #     type: number
+        # - name: total_price
+        #   in: query
+        #   description: ""
+        #   schema: 
+        #     type: number            
+      #     required: True                              
+      # responses:
+      #   '200':
+      #     description: OK
 
 
 
@@ -85,3 +196,212 @@ paths:
   #       responses:
   #         '200':
   #           description: OK
+
+
+
+# openapi: 3.0.0
+# info:
+#   title: My API
+#   version: "1.0"
+
+# servers:
+#   - url: "/"
+
+# paths:
+
+#   /points:
+#     post:
+#       operationId: "endpoints.insert_facts"
+#       summary: Upload and insert data from a CSV file
+#       requestBody:
+#         required: true
+#         content:
+#           multipart/form-data:
+#             schema:
+#               type: object
+#               properties:
+#                 file:
+#                   type: string
+#                   # format: binary
+#                 gender:
+#                   type: string
+#                 invoice_id:
+#                   type: string
+#                 date:
+#                   type: string
+#                   format: date
+#                 quantity:
+#                   type: string
+#                   # format: float
+#                 total_price:
+#                   type: string
+#                   # format: float
+#       responses:
+#         '200':
+#           description: OK
+
+#   /points/facts:
+#     post:
+#       operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
+#       summary: Insert data into the Facts table
+#       parameters:
+#         - name: filename
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#           required: true
+#         - name: customer_id
+#           in: query
+#           description: ""
+#           schema: 
+#             type: string
+#           required: true
+#       responses:
+#         '200':
+#           description: OK
+
+# openapi: 3.0.0
+# info:
+#   title: My API
+#   version: "1.0"
+
+# servers:
+#   - url: "/"
+
+# paths:
+
+  # /points:
+  #   post:
+  #     operationId: "endpoints.insert_facts"
+  #     summary: Upload and insert data from a CSV file
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         multipart/form-data:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               file:
+  #                 type: string
+  #                 # format: binary
+  #               gender:
+  #                 type: string
+  #               invoice_id:
+  #                 type: string
+  #               date:
+  #                 type: string
+  #                 format: date
+  #               quantity:
+  #                 type: string
+  #                 # format: float
+  #               total_price:
+  #                 type: string
+  #                 # format: float
+  #               customer_id:
+  #                 type: string
+  #             required:
+  #               - file
+  #               - customer_id
+  #               - gender
+  #               - invoice_id
+  #               - date
+  #               - quantity
+  #               - total_price
+  #     responses:
+  #       '200':
+  #         description: OK
+
+  # /points/facts:
+  #   post:
+  #     operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
+  #     summary: Insert data into the Facts table
+  #     parameters:
+  #       - name: filename
+  #         in: query
+  #         description: ""
+  #         schema: 
+  #           type: string
+  #         required: true
+  #       - name: customer_id
+  #         in: query
+  #         description: ""
+  #         schema: 
+  #           type: string
+  #         required: true
+  #     responses:
+  #       '200':
+  #         description: OK
+
+
+
+openapi: 3.0.0
+info:
+  title: My API
+  version: "1.0"
+
+servers:
+  - url: "/"
+
+paths:
+  /points:
+    post:
+      operationId: "endpoints.insert_facts"
+      summary: Upload and insert data from a CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  # format: binary
+                gender:
+                  type: string
+                invoice_id:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                quantity:
+                  type: string
+                  # format: float
+                total_price:
+                  type: string
+                  # format: float
+                customer_id:
+                  type: string
+              required:
+                - file
+                - customer_id
+                - gender
+                - invoice_id
+                - date
+                - quantity
+                - total_price
+      responses:
+        '200':
+          description: OK
+
+  /points/facts:
+    post:
+      operationId: "endpoints.top_10_customer_expected_purchase_in_30_days"
+      summary: Insert data into the Facts table
+      parameters:
+        - name: filename
+          in: query
+          description: ""
+          schema: 
+            type: string
+          required: true
+        - name: customer_id
+          in: query
+          description: ""
+          schema: 
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
