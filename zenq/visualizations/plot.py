@@ -2,31 +2,22 @@
 # from zenq.utils import test
 import sqlalchemy
 from sqlalchemy import cast, Numeric
-
 from sqlalchemy import exc
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, load_only, relationship, joinedload, sessionmaker
 from sqlalchemy.schema import CreateSchema
-from sqlalchemy import Sequence, UniqueConstraint 
-from sqlalchemy import create_engine, desc, asc
+from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc
 import matplotlib.pyplot as plt
-
-from sqlalchemy import text
-from sqlalchemy.orm import relationship
+from sqlalchemy import text, func, create_engine
 from zenq.api.config import db_uri
-from sqlalchemy import func, create_engine      
 from zenq.api.tables import Base, Facts
-from sqlalchemy.orm import load_only, relationship, joinedload, sessionmaker
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from lifetimes import GammaGammaFitter
-from lifetimes import BetaGeoFitter
+from lifetimes import GammaGammaFitter, BetaGeoFitter
 import datetime as dt
-from lifetimes.plotting import plot_probability_alive_matrix
-from lifetimes.plotting import plot_frequency_recency_matrix
+from lifetimes.plotting import plot_probability_alive_matrix, plot_frequency_recency_matrix
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import seaborn as sns
