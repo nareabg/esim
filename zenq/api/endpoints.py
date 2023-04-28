@@ -28,7 +28,7 @@ class points():
 
             # Create dropdown widgets for the user to choose columns
             column_dropdowns = [widgets.Dropdown(options=available_columns, description=f'Map to {col}')
-                                for col in ['customer_id', 'gender', 'location_id', 'location_name', 'invoice_id', 'date', 'quantity', 'total_price']]
+                                for col in ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']]
 
             # Display the dropdown widgets
             display(*column_dropdowns)
@@ -46,13 +46,13 @@ class points():
                     # Insert the data into the Location table
                     unique_customers = self.df.drop_duplicates(subset=column_names)
                     for index, row in unique_customers.iterrows():
-                        customer_id, gender, location_id, location_name, invoice_id, date, quantity, total_price = row[column_names[0]], row[column_names[1]], row[column_names[2]], row[column_names[3]], row[column_names[4]], row[column_names[5]], row[column_names[6]], row[column_names[7]]
+                        customer_id, gender, invoice_id, date, quantity, total_price = row[column_names[0]], row[column_names[1]], row[column_names[2]], row[column_names[3]], row[column_names[4]], row[column_names[5]]
                         try:
                             self.engine.execute(
                                 Facts.__table__.insert(),
-                                {'customer_id': customer_id, 'gender': gender, 'location_id': location_id,'location_name':location_name, 'invoice_id':invoice_id, 'date':date, 'quantity':quantity, 'total_price': total_price }
+                                {'customer_id': customer_id, 'gender': gender, 'invoice_id':invoice_id, 'date':date, 'quantity':quantity, 'total_price': total_price }
                             )
-                            print(f'Successfully inserted location: {customer_id}, {gender},  {location_id}, {location_name}, {invoice_id}, {date}, {quantity}, {total_price} ')
+                            print(f'Successfully inserted row: {customer_id}, {gender}, {invoice_id}, {date}, {quantity}, {total_price} ')
                         except IntegrityError:
                             print(f'Customer {invoice_id} already exists in the table')
                 self.engine.dispose()

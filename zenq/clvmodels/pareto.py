@@ -58,7 +58,7 @@ class Model():
                                     
         cltv_df = pd.DataFrame(cltv_df, columns=['customer_id','min_date', 'recency', 'T', 'frequency', 'monetary'])
         one_time_buyers = round(sum(cltv_df['frequency'] == 0)/float(len(cltv_df))*(100),2)
-        print('Percentage of customers that only bought onece', one_time_buyers, '%')
+        print('Percentage of customers that only bought once', one_time_buyers, '%')
         cltv_df = cltv_df[cltv_df["monetary"] > 0]
         cltv_df = cltv_df[cltv_df["frequency"] > 0]
         cltv_df['T'] = cltv_df['T'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
@@ -161,7 +161,7 @@ class Model():
         cltv_df['frequency'].values, cltv_df['recency'].values, cltv_df['T'].values)
         CustomerAlive = pd.DataFrame({
             'Customer': cltv_df['customer_id'],
-            'Probability of being Alive': cltv_df['probability_customer_alive']
+            'Probability_of_being_Alive': cltv_df['probability_customer_alive']
         })
         
         return CustomerAlive

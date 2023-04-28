@@ -2,7 +2,7 @@
 # from zenq.utils import test
 import sqlalchemy
 from sqlalchemy import cast, Numeric
-from zenq.api.tables import RFMScore
+
 from sqlalchemy import exc
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import declarative_base
@@ -10,6 +10,9 @@ from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy import Sequence, UniqueConstraint 
+from sqlalchemy import create_engine, desc, asc
+import matplotlib.pyplot as plt
+
 from sqlalchemy import text
 from sqlalchemy.orm import relationship
 from zenq.api.config import db_uri
@@ -44,15 +47,15 @@ class Visuals():
         self.session = sessionmaker(bind=self.engine)()
         
  
-    def total_sales_by_location(self):
-        result = self.session.query(Facts.location_name, sqlalchemy.func.sum(Facts.total_price)).\
-                    group_by(Facts.location_name).all()
-        x = [i[0] for i in result]
-        y = [i[1] for i in result]
-        plt.bar(x, y)
-        plt.xlabel("Location Name")
-        plt.ylabel("Total Sales")
-        plt.show()
+    # def total_sales_by_location(self):
+    #     result = self.session.query(Facts.location_name, sqlalchemy.func.sum(Facts.total_price)).\
+    #                 group_by(Facts.location_name).all()
+    #     x = [i[0] for i in result]
+    #     y = [i[1] for i in result]
+    #     plt.bar(x, y)
+    #     plt.xlabel("Location Name")
+    #     plt.ylabel("Total Sales")
+    #     plt.show()
 
         
     def price_distribution(self):
@@ -84,7 +87,103 @@ class Visuals():
         fig.show()
 
     def rfm_treemap(self):
-        rfm = self.session.query(RFMScore.segment, func.count(RFMScore.RFM_SCORE)).group_by(RFMScore.segment).all()
+        rfm = self.session.query(Facts.RFMScore.segment, func.count(Facts.RFMScore.RFM_SCORE)).group_by(Facts.RFMScore.segment).all()
         df_treemap = pd.DataFrame(rfm, columns=['segment', 'RFM_SCORE'])
         fig = px.treemap(df_treemap, path=['segment'], values='RFM_SCORE')
         fig.show()
+        
+        
+    def top_customers_30days(self):
+        top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
+                      .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
+                      .limit(10)\
+                      .all()
+        fig = go.Figure(data=[go.Bar(
+        x=[customer.Customer for customer in top_customers],
+        y=[customer.Expected_Purchases_30 for customer in top_customers],
+        text=[f"Expected Purchases in 30 Days: {customer.Expected_Purchases_30:.2f}" for customer in top_customers],
+        textposition='auto'
+                    )])
+        fig.update_layout(
+        title="Top Customers with the Highest Expected Number of Purchases in 30 Days",
+        xaxis_title="Customer",
+        yaxis_title="Expected Number of Purchases"
+        )
+
+        fig.show()
+        
+            
+    def top_customers_90days(self):
+        top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
+                      .order_by(desc(Facts.Prediction.Expected_Purchases_90))\
+                      .limit(10)\
+                      .all()
+        fig = go.Figure(data=[go.Bar(
+        x=[customer.Customer for customer in top_customers],
+        y=[customer.Expected_Purchases_90 for customer in top_customers],
+        text=[f"Expected Purchases in 90 Days: {customer.Expected_Purchases_90:.2f}" for customer in top_customers],
+        textposition='auto'
+                    )])
+        fig.update_layout(
+        title="Top Customers with the Highest Expected Number of Purchases in 90 Days",
+        xaxis_title="Customer",
+        yaxis_title="Expected Number of Purchases"
+        )
+
+        fig.show()
+        
+    def lowest_customers_90days(self):
+        top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
+                      .order_by(asc(Facts.Prediction.Expected_Purchases_90))\
+                      .limit(10)\
+                      .all()
+        fig = go.Figure(data=[go.Bar(
+        x=[customer.Customer for customer in top_customers],
+        y=[customer.Expected_Purchases_90 for customer in top_customers],
+        text=[f"Expected Purchases in 90 Days: {customer.Expected_Purchases_90:.2f}" for customer in top_customers],
+        textposition='auto'
+                    )])
+        fig.update_layout(
+        title="Top Customers with the Lowest Expected Number of Purchases in 90 Days",
+        xaxis_title="Customer",
+        yaxis_title="Expected Number of Purchases"
+        )
+
+        fig.show()
+        
+    # def customer_aliveness(self):
+    #     customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
+    #     df = pd.DataFrame(customer_alive_df, columns=['Customer', 'Probability_of_being_Alive' ])
+    #     plt.hist(df['Probability_of_being_Alive'], bins=50)
+    #     plt.title('Distribution of Probability of Being Alive')
+    #     plt.xlabel('Probability of Being Alive')
+    #     plt.ylabel('Number of Customers')
+    #     plt.show()
+    def customer_aliveness(self):
+        customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
+        df = pd.DataFrame(customer_alive_df, columns=['Customer', 'Probability_of_being_Alive' ])
+        
+        # set custom color scheme
+        color = '#4F1BBD'
+        plt.rcParams['text.color'] = '#000000'
+        plt.rcParams['axes.labelcolor'] = '#000000'
+        plt.rcParams['xtick.color'] = '#000000'
+        plt.rcParams['ytick.color'] = '#000000'
+        plt.rcParams['grid.color'] = '#d4d4d4'
+        
+        # create histogram plot
+        plt.figure(figsize=(8, 6))
+        plt.hist(df['Probability_of_being_Alive'], bins=50, color=color, edgecolor='#ffffff')
+        
+        # set title and labels
+        plt.title('Distribution of Probability of Being Alive', fontsize=16)
+        plt.xlabel('Probability of Being Alive', fontsize=14)
+        plt.ylabel('Number of Customers', fontsize=14)
+        
+        # add gridlines
+        plt.grid(True)
+        
+        # show plot
+        plt.show()
+
+
