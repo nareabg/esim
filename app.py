@@ -11,7 +11,7 @@ nare = 'nare.jpg'
 lusine = 'luso.jpg'
 armine = 'armin.jpg'
 
-app.layout=html.Div([ 
+app.layout= html.Div([ 
                        
     html.Div([
         html.Div([    
@@ -60,34 +60,34 @@ app.layout=html.Div([
         ]),
     ]),
 
-html.Div([
+# html.Div([
     html.Div([           
             html.Div([
-                html.H1('OUR GIT_HUB', id = 'our_text'),],),
+                html.H2('OUR GIT_HUB', id = 'our_text'),],),
                     
             html.Div([
                 html.H3('LINK', id = 'link'),  ], id = 'link_git')
     ], id = 'green_box') ,
     
     html.Div([
-        html.H1('OUR TEAM', id = 'our_team'), 
+         html.H1('OUR TEAM', id = 'our_team'), 
     ],id = 'team_box'),
         
+    html.Div([
         html.Div([
-            html.Div([
-                html.Img(src=app.get_asset_url(nare), id = 'nkar_nare')
-            ]),
-            html.Div([
-                html.Img(src=app.get_asset_url(lusine), id = 'nkar_luso')
-            ]),
-           html.Div([
-                html.Img(src=app.get_asset_url(armine), id = 'nkar_armin')
-            ]),
-            
-            
-            
-    ], id = 'black_box_1')
-],)
+            html.Img(src=app.get_asset_url(nare), id = 'nkar_nare'),
+            html.H3('Nare Abgaryan', id = 'nare_name')
+        ]),
+        html.Div([
+            html.Img(src=app.get_asset_url(lusine), id = 'nkar_luso'),
+            html.H3('Lusine Babayan', id = 'luso_name')
+        ]),
+       html.Div([
+            html.Img(src=app.get_asset_url(armine), id = 'nkar_armin'),
+            html.H3('Armine Khachatryan', id = 'armin_name')
+        ]),  
+        ], id = 'black_box_1')
+# ],)
 
 # ], id='page_layout2')
 ], id = 'layout1')
