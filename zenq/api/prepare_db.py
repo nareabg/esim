@@ -49,7 +49,7 @@
 import sys
 import os
 from sqlalchemy_utils import database_exists, create_database
-from tables import Facts
+from .tables import Facts
 from sqlalchemy import create_engine
 
 print("Enter your database credentials")

@@ -5,7 +5,13 @@ import plotly.express as px
 import dash
 from dash import callback,Input, Output, State, dcc, html
  
- 
+dash.register_page(
+    __name__,
+    # path='/page2',
+    # title='Details',
+    # name='Details'
+)
+
  
 layout =   html.Div([
     html.Div([

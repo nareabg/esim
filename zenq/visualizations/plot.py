@@ -37,16 +37,7 @@ class Visuals():
         Base.metadata.create_all(self.engine)
         self.session = sessionmaker(bind=self.engine)()
         
- 
-    # def total_sales_by_location(self):
-    #     result = self.session.query(Facts.location_name, sqlalchemy.func.sum(Facts.total_price)).\
-    #                 group_by(Facts.location_name).all()
-    #     x = [i[0] for i in result]
-    #     y = [i[1] for i in result]
-    #     plt.bar(x, y)
-    #     plt.xlabel("Location Name")
-    #     plt.ylabel("Total Sales")
-    #     plt.show()
+
 
         
     def price_distribution(self):
@@ -54,6 +45,8 @@ class Visuals():
         df = pd.DataFrame(total_price, columns=['total_price'])
         fig = px.box(df, x='total_price')
         fig.show()
+        
+
         
     def time_series(self):
         daily_sales = (
@@ -63,10 +56,11 @@ class Visuals():
             .all()
         )
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines'))
-        fig.update_layout(title='Daily Sales', xaxis_title='Date', yaxis_title='Total sales')
+        fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines', line=dict(color='blue')))
+        fig.update_layout(title='Daily Sales', yaxis_title='Total sales', xaxis=dict(showgrid=False, tickangle=45, tickfont=dict(size=12), tickmode='auto', title=''))
+        fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
         fig.show()
-        
+
 
 
     def gender_price(self):

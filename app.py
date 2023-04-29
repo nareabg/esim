@@ -1,41 +1,72 @@
 
+	# html.Div([
+    #         dcc.Link(html.Button('Data Description', className="data-description-text4"), href='/page1')
+    #     ], id = 'data-description-button2'),
+    #     html.Hr(),  
+   	# html.Div([
+    #         dcc.Link(html.Button('CLV', className="data-description-text"), href='/page2')
+    #     ], id = 'data-description-button'),
+    #     html.Hr(),   
+	# html.Div([
+    #         dcc.Link(html.Button('Model Visuals', className="data-description-text3"), href='/page3')
+    #     ], id = 'data-description-button1'),
+    #     html.Hr(),   
+
+
+
+
+
+
 import dash
+
 from dash import Dash, dcc, html, Input, Output, State
 app = dash.Dash(__name__, use_pages=True,suppress_callback_exceptions=True)
 server=app.server
-
+# from ..zenq.visualizations.plots import Visuals
 #image
 image_filename = 'logo.jpeg'
 w = 'w.jpg'
-nare = 'nare.jpg'
-lusine = 'luso.jpg'
-armine = 'armin.jpg'
+# nare = 'nare.jpg'
+# lusine = 'luso.jpg'
+# armine = 'armin.jpg'
+app.layout = html.Div(
+    [
+        html.Div([
+            dcc.Link(html.Button(page['name'], className="navigation"), href=page['path'])
+            for page in dash.page_registry.values()
+        ]),
+        html.Hr(),
 
-app.layout= html.Div([ 
+        # content of each page
+        dash.page_container
+    ],className = 'twelve columns' )
+# )
+# app.layout= html.Div([ 
                        
-    html.Div([
-        html.Div([    
-            html.Img(src=app.get_asset_url(image_filename), id = 'esim')
-        ], id=''),
+#     html.Div([
+#         html.Div([    
+#             html.Img(src=app.get_asset_url(image_filename), id = 'esim')
+#         ], id=''),
             
-        html.Div([
-            html.Button(
-                dcc.Link('Home', href='/page1', id = 'home_text'), id='home_button', 
-            ), html.Hr(),
-        ]),
             
-        html.Div([
-            html.Button(
-                dcc.Link('Details', href='/page2', id = 'detail_text'), id='detail_button', 
-            ), html.Hr(),
-        ]),
+#         html.Div([
+#             html.Button(
+#                 dcc.Link('Home', href='/page1', id = 'home_text'), id='home_button', 
+#             ), html.Hr(),
+#         ]),
             
-        html.Div([
-            html.Button(
-                dcc.Link('Calculate', href='/page3', id = 'calculate_text'), id='calculate_button', 
-             ), html.Hr(),
-        ]),            
-    ], className='rectangle1'),
+#         html.Div([
+#             html.Button(
+#                 dcc.Link('Details', href='/page2', id = 'detail_text'), id='detail_button', 
+#             ), html.Hr(),
+#         ]),
+            
+#         html.Div([
+#             html.Button(
+#                 dcc.Link('Calculate', href='/page3', id = 'calculate_text'), id='calculate_button', 
+#              ), html.Hr(),
+#         ]),            
+#     ], className='rectangle1'),
   #page1
 
     # html.Div([
@@ -114,11 +145,7 @@ app.layout= html.Div([
 
 
 #    html.Div([
-#             #  html.P('UPLOAD YOUR CSV.', id = 'csv_text'),
- 
-#             # html.Div([
-                 
-#             # ], id = 'upload_buttom'),
+
 #             dcc.Upload(id='upload_buttom',
 #                 children=html.Div(['Drag and Drop or ', html.A('Select Files')], id = 'csv_text')
 #                 ),
@@ -126,7 +153,11 @@ app.layout= html.Div([
 #     ], className = 'black_box3'),
 
 #     html.Div([          
-#         html.Div([],className = 'rect1'),
+#         html.Div([
+#                     # html.Div([
+#                     # dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
+#                     # ], className='rect1')
+#         ],className = 'rect1'),
           
 #         html.Div([], className = 'rect2') ,              
 #     ]),
@@ -146,7 +177,7 @@ app.layout= html.Div([
 
 
 
-], id = 'layout1')
+# ], id = 'layout1')
 
 
 if __name__=='__main__':

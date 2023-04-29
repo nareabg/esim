@@ -30,6 +30,7 @@ setup(
     ],
     description="CLV package for data scientists.",
     entry_points={
+        
         'console_scripts': [
             'zenq=zenq.cli:main',
         ],

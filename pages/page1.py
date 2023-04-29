@@ -4,15 +4,17 @@ from dash import Dash, dcc, html, Input, Output, State
  
 from dash import callback,Input, Output, State, dcc, html
 
-app = dash.Dash(__name__ )
+# app = dash.Dash(__name__ )
 
  
 dash.register_page(
     __name__,
-    path='/page1',
-    title='Home',
-    name='Home'
+    path='/',
+    # title='Home',
+    # name='Home'
 )
+
+
 w = 'w.jpg'
 nare = 'nare.jpg'
 lusine = 'luso.jpg'
@@ -34,7 +36,7 @@ layout =      html.Div([
         html.Div([ ], id = 'green'),   
     
         html.Div([
-            html.Img(src=app.get_asset_url(w), id = 'nkar')
+            # html.Img(src=app.get_asset_url(w), id = 'nkar')
         ]),
     ]),
 
@@ -52,15 +54,15 @@ layout =      html.Div([
         
     html.Div([
         html.Div([
-            html.Img(src=app.get_asset_url(nare), id = 'nkar_nare'),
+            # html.Img(src=app.get_asset_url(nare), id = 'nkar_nare'),
             html.H3('Nare Abgaryan', id = 'nare_name')
         ]),
         html.Div([
-            html.Img(src=app.get_asset_url(lusine), id = 'nkar_luso'),
+            # html.Img(src=app.get_asset_url(lusine), id = 'nkar_luso'),
             html.H3('Lusine Babayan', id = 'luso_name')
         ]),
        html.Div([
-            html.Img(src=app.get_asset_url(armine), id = 'nkar_armin'),
+            # html.Img(src=app.get_asset_url(armine), id = 'nkar_armin'),
             html.H3('Armine Khachatryan', id = 'armin_name')
         ]),  
         ], id = 'black_box_1')

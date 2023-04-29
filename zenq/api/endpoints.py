@@ -7,14 +7,14 @@ import ipywidgets
 from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc
 from datetime import datetime
 from sqlalchemy import create_engine
-from tables import  Facts #, CustomerFact, Prediction
+from .tables import  Facts #, CustomerFact, Prediction
 from sqlalchemy.orm import sessionmaker
 # from zenq.clvmodels.modeling import ParetoNBD_CLV_Model
 import pandas as pd
 import ipywidgets as widgets
 from IPython.display import display
 from sqlalchemy.exc import IntegrityError
-from config import db_uri
+from .config import db_uri
 
 
 engine = create_engine(db_uri)
