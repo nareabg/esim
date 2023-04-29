@@ -115,7 +115,7 @@ top: 30px;
 #layout1{
 position: absolute;
 width: 1440px;
-height: 1024px;
+height: 2024px;
 
 background: #ffffff;
 }
@@ -421,3 +421,190 @@ text-align: center;
 
 color: #FFFFFF;
 }
+
+
+#clv_text{
+  position: relative;
+  width: 777px;
+ height: 59px;
+ left: 72px;
+ top: 21px;
+ 
+ font-family: 'Hanuman';
+ font-style: normal;
+ font-weight: 400;
+ font-size: 40px;
+ line-height: 59px;
+ /* identical to box height */
+ 
+ color: #000000;
+ 
+ }
+
+
+
+#explore_text{
+  position: relative;
+
+width: 934px;
+height: 67px;
+left: 261px;
+top: 0px;
+
+font-family: 'Hanuman';
+font-style: normal;
+font-weight: 400;
+font-size: 64px;
+line-height: 94px;
+text-align: center;
+
+color: #ffffff;
+}
+
+
+.rect1{
+  position: absolute;
+  width: 650px;
+  height: 554px;
+  left: 32px;
+  top: 554px;
+  
+  background: #b7cbb7;
+}
+
+.rect2{
+  position: absolute;
+  width: 650px;
+  height: 554px;
+  left: 750px;
+  top: 554px;
+  
+  background: #c4bcd7;
+}
+
+#zenq_1 {
+  position: relative;
+width: 322px;
+height: 65px;
+left: 67px;
+top: 722px;
+
+ }
+
+
+
+#long_text_1{
+  position: relative;
+width: 500px;
+height: 330px;
+left: 72px;
+top: 20px;
+
+font-family: 'Hanuman';
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+line-height: 29px;
+
+color: #000000;
+
+}
+
+#rfm_text{
+  position: relative;
+width: 500px;
+height: 330px;
+left: 72px;
+top: 20px;
+
+font-family: 'Hanuman';
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+line-height: 29px;
+
+color: #000000;
+
+}
+
+
+
+#rfm{
+  position: relative;
+  width: 777px;
+ height: 59px;
+ left: 72px;
+ top: 21px;
+ 
+ font-family: 'Hanuman';
+ font-style: normal;
+ font-weight: 400;
+ font-size: 40px;
+ line-height: 59px;
+ /* identical to box height */
+ 
+ color: #000000;
+ 
+ }
+
+
+ #csv_text{
+  position: absolute;
+
+width: 934px;
+height: 67px;
+left: -270px;
+top: 0px;
+
+font-family: 'Hanuman';
+font-style: normal;
+font-weight: 400;
+font-size: 24px;
+line-height: 94px;
+text-align: center;
+
+color: #4c177c;
+}
+
+
+#upload_buttom{
+  position: relative;
+  
+  width: 400px;
+  height: 86px;
+  left: 525px;
+  top: 70px;
+  
+  background: #FFFFFF;
+  border-radius: 30px;
+  }
+
+
+.rect3{
+  position: relative;
+  width: 650px;
+  height: 554px;
+  left: 32px;
+  /* top: 554px; */
+  
+  background: #c4bcd7;
+}
+
+.rect4{
+  position: absolute;
+  width: 650px;
+  height: 554px;
+  left: 750px;
+  top: 0px;
+  
+  background: #b7cbb7;
+   
+}
+
+ .pordz{
+  position: absolute;
+  width: 100%;
+  height: 554px;
+  top: 1180px;
+  background: #ffffff;
+} 
