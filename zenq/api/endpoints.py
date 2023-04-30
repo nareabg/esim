@@ -74,8 +74,7 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
     session.close()
 
         
-def top_10_customer_expected_purchase_in_30_days(filename):
-    df = pd.read_csv(filename)
+def top_10_customer_expected_purchase_in_30_days():
     top_customers = session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
             .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
             .limit(10)\

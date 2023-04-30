@@ -127,7 +127,7 @@ class Model():
         return model_params
         
     
-    def predict_paretonbd(self, num_periods=1):
+    def predict_paretonbd(self):
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         frequency = cltv_df['frequency']

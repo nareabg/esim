@@ -7,7 +7,7 @@ import plotly.express as px
 from lifetimes import BetaGeoFitter
 from lifetimes import GammaGammaFitter
 from lifetimes.utils import calibration_and_holdout_data
-# from zenq.visualizations.plot import Visuals
+from zenq.visualizations.plot import Visuals
 import dash
 from dash import callback,Input, Output, State, dcc, html
 dash.register_page(
@@ -25,17 +25,22 @@ html.Div([
                 children=html.Div(['Drag and Drop or ', html.A('Select Files')], id = 'csv_text')
                 ),
 
-    ], className = 'black_box3'),
+    ], className = 'twelve columns'),
 
     html.Div([          
         html.Div([
-                    # html.Div([
-                    # dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
-                    # ], className='rect1')
-        ],className = 'rect1'),
+                    html.Div([
+                    dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
+                    ])
+        ],className = 'six columns'),
           
-        html.Div([], className = 'rect2') ,              
-    ]),
+        html.Div([
+                html.Div([
+                    dcc.Graph(id='', figure=Visuals().gender_price())
+                ])
+            
+            ], className = 'six columns') ,              
+    ], className = 'twelve columns'),
 
     html.Div([  
                       

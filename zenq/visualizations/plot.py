@@ -28,14 +28,18 @@ from datetime import datetime
  
 
 class Visuals():
+    
+    Facts = Facts()
+    metadata, engine = Facts.connect_to_db(db_uri)
+    session = sessionmaker(bind=engine)()
 
     def __init__(
         self
     ):
         self.params_ = {}
-        self.engine = create_engine(db_uri)
-        Base.metadata.create_all(self.engine)
-        self.session = sessionmaker(bind=self.engine)()
+        # self.engine = connect(db_uri)
+        # Base.metadata.create_all(self.engine)
+        # self.session = sessionmaker(bind=self.engine)()
         
 
 
@@ -44,7 +48,7 @@ class Visuals():
         total_price = self.session.query(Facts.total_price).all()
         df = pd.DataFrame(total_price, columns=['total_price'])
         fig = px.box(df, x='total_price')
-        fig.show()
+        return fig
         
 
         
@@ -55,6 +59,7 @@ class Visuals():
             .order_by(Facts.date)  # sort by date in ascending order
             .all()
         )
+        self.session.close()
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines', line=dict(color='blue')))
         fig.update_layout(title='Daily Sales', yaxis_title='Total sales', xaxis=dict(showgrid=False, tickangle=45, tickfont=dict(size=12), tickmode='auto', title=''))
@@ -67,15 +72,20 @@ class Visuals():
         price_by_gender = (
             self.session.query(Facts.gender, Facts.total_price).all()
         )
+        self.session.close()
         df = pd.DataFrame(price_by_gender, columns=['gender', 'total_price'])
         fig = px.box(df, x='gender', y='total_price', title='Product price by gender')
-        fig.show()
+        fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+
+        return fig
 
     def rfm_treemap(self):
         rfm = self.session.query(Facts.RFMScore.segment, func.count(Facts.RFMScore.RFM_SCORE)).group_by(Facts.RFMScore.segment).all()
+        self.session.close()
+
         df_treemap = pd.DataFrame(rfm, columns=['segment', 'RFM_SCORE'])
         fig = px.treemap(df_treemap, path=['segment'], values='RFM_SCORE')
-        fig.show()
+        return fig
         
         
     def top_customers_30days(self):
@@ -83,6 +93,8 @@ class Visuals():
                       .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
                       .limit(10)\
                       .all()
+        self.session.close()
+                     
         fig = go.Figure(data=[go.Bar(
         x=[customer.Customer for customer in top_customers],
         y=[customer.Expected_Purchases_30 for customer in top_customers],
@@ -95,7 +107,7 @@ class Visuals():
         yaxis_title="Expected Number of Purchases"
         )
 
-        fig.show()
+        return fig
         
             
     def top_customers_90days(self):
@@ -103,6 +115,7 @@ class Visuals():
                       .order_by(desc(Facts.Prediction.Expected_Purchases_90))\
                       .limit(10)\
                       .all()
+        self.session.close()                      
         fig = go.Figure(data=[go.Bar(
         x=[customer.Customer for customer in top_customers],
         y=[customer.Expected_Purchases_90 for customer in top_customers],
@@ -115,13 +128,14 @@ class Visuals():
         yaxis_title="Expected Number of Purchases"
         )
 
-        fig.show()
+        return fig
         
     def lowest_customers_90days(self):
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
                       .order_by(asc(Facts.Prediction.Expected_Purchases_90))\
                       .limit(10)\
                       .all()
+        self.session.close()            
         fig = go.Figure(data=[go.Bar(
         x=[customer.Customer for customer in top_customers],
         y=[customer.Expected_Purchases_90 for customer in top_customers],
@@ -134,7 +148,7 @@ class Visuals():
         yaxis_title="Expected Number of Purchases"
         )
 
-        fig.show()
+        return fig
         
     # def customer_aliveness(self):
     #     customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
@@ -146,6 +160,8 @@ class Visuals():
     #     plt.show()
     def customer_aliveness(self):
         customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
+        self.session.close()
+        
         df = pd.DataFrame(customer_alive_df, columns=['Customer', 'Probability_of_being_Alive' ])
         
         # set custom color scheme
@@ -169,6 +185,6 @@ class Visuals():
         plt.grid(True)
         
         # show plot
-        plt.show()
+        return plt
 
 
