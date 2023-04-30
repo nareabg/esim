@@ -59,7 +59,7 @@ class Visuals():
         fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines', line=dict(color='blue')))
         fig.update_layout(title='Daily Sales', yaxis_title='Total sales', xaxis=dict(showgrid=False, tickangle=45, tickfont=dict(size=12), tickmode='auto', title=''))
         fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-        fig.show()
+        return fig
 
 
 

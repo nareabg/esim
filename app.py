@@ -1,16 +1,5 @@
 
-	# html.Div([
-    #         dcc.Link(html.Button('Data Description', className="data-description-text4"), href='/page1')
-    #     ], id = 'data-description-button2'),
-    #     html.Hr(),  
-   	# html.Div([
-    #         dcc.Link(html.Button('CLV', className="data-description-text"), href='/page2')
-    #     ], id = 'data-description-button'),
-    #     html.Hr(),   
-	# html.Div([
-    #         dcc.Link(html.Button('Model Visuals', className="data-description-text3"), href='/page3')
-    #     ], id = 'data-description-button1'),
-    #     html.Hr(),   
+
 
 
 
@@ -29,44 +18,68 @@ w = 'w.jpg'
 # nare = 'nare.jpg'
 # lusine = 'luso.jpg'
 # armine = 'armin.jpg'
-app.layout = html.Div(
-    [
-        html.Div([
-            dcc.Link(html.Button(page['name'], className="navigation"), href=page['path'])
-            for page in dash.page_registry.values()
+# app.layout = html.Div(
+#     [
+#         html.Div([
+#             dcc.Link(html.Button(page['name'], className="navigation"), href=page['path'])
+#             for page in dash.page_registry.values()
+#         ]),
+#         html.Hr(),
+
+#         # content of each page
+#         dash.page_container
+#     ] )
+# )
+app.layout= html.Div([ 
+                       
+    html.Div([
+        html.Div([    
+            html.Img(src=app.get_asset_url(image_filename), id = 'esim')
+        ], id=''),
+         html.Div([   
+                 html.Div([
+            dcc.Link(html.Button(page['name'], className="navigation",  style={'font-size': '24px', 'font-family': 'Hanuman'}), href=page['path'])
+            for page in sorted(dash.page_registry.values(), key=lambda p: p['name'], reverse=True)
         ]),
         html.Hr(),
 
         # content of each page
-        dash.page_container
-    ],className = 'twelve columns' )
-# )
-# app.layout= html.Div([ 
-                       
-#     html.Div([
-#         html.Div([    
-#             html.Img(src=app.get_asset_url(image_filename), id = 'esim')
-#         ], id=''),
+        dash.page_container   
+                 ],className = 'twelve columns' )
             
+        ], className='rectangle1'),  
+], id = 'layout1')
+
+    #        	html.Div([
+    #         dcc.Link(html.Button('Home', id=''), href='/')
+    #     ], id = 'home_button'),
+    #     html.Hr(),  
+   	# html.Div([
+    #         dcc.Link(html.Button('Details', id=''), href='/page2')
+    #     ], id = 'detail_button'),
+    #     html.Hr(),   
+	# html.Div([
+    #         dcc.Link(html.Button('Calculate', id=''), href='/page3')
+    #     ], id = 'calculate_button'),
+    #     html.Hr(),    
+        # html.Div([
+        #     html.Button(
+        #         dcc.Link('Home', href='/page1', id = 'home_text'), id='home_button', 
+        #     ), html.Hr(),
+        # ]),
             
-#         html.Div([
-#             html.Button(
-#                 dcc.Link('Home', href='/page1', id = 'home_text'), id='home_button', 
-#             ), html.Hr(),
-#         ]),
+        # html.Div([
+        #     html.Button(
+        #         dcc.Link('Details', href='/page2', id = 'detail_text'), id='detail_button', 
+        #     ), html.Hr(),
+        # ]),
             
-#         html.Div([
-#             html.Button(
-#                 dcc.Link('Details', href='/page2', id = 'detail_text'), id='detail_button', 
-#             ), html.Hr(),
-#         ]),
-            
-#         html.Div([
-#             html.Button(
-#                 dcc.Link('Calculate', href='/page3', id = 'calculate_text'), id='calculate_button', 
-#              ), html.Hr(),
-#         ]),            
-#     ], className='rectangle1'),
+        # html.Div([
+        #     html.Button(
+        #         dcc.Link('Calculate', href='/page3', id = 'calculate_text'), id='calculate_button', 
+        #      ), html.Hr(),
+        # ]),            
+    # ], className='rectangle1'),
   #page1
 
     # html.Div([

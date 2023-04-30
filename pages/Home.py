@@ -1,29 +1,34 @@
 import dash
 
 from dash import Dash, dcc, html, Input, Output, State
- 
 from dash import callback,Input, Output, State, dcc, html
 
-# app = dash.Dash(__name__ )
+app = dash.Dash(__name__ )
+
+
+image_filename = 'w.jpg'  # replace with your image filename
+image_url = app.get_asset_url(image_filename)
+
+nare = 'nare.jpg'  # replace with your image filename
+nare = app.get_asset_url(nare)
+
+luso = 'luso.jpg'  # replace with your image filename
+luso = app.get_asset_url(luso)
+
+armin = 'armin.jpg'  # replace with your image filename
+armin = app.get_asset_url(armin)
 
  
 dash.register_page(
     __name__,
-    path='/',
-    # title='Home',
-    # name='Home'
+    path='/'
 )
 
-
-w = 'w.jpg'
-nare = 'nare.jpg'
-lusine = 'luso.jpg'
-armine = 'armin.jpg'
 layout =      html.Div([
     html.Div([
                 html.P('UNLOCK THE POWER OF CUSTOMER LOYALTY', id = 'unlock_text'),
 
-    ], className = 'black_box3'),
+    ], className = 'black_box33'),
 
     html.Div([
         html.Div([
@@ -36,9 +41,9 @@ layout =      html.Div([
         html.Div([ ], id = 'green'),   
     
         html.Div([
-            # html.Img(src=app.get_asset_url(w), id = 'nkar')
+            html.Img(src=image_url, id = 'nkar')
         ]),
-    ]),
+    ], id = 'box'),
 
     html.Div([           
             html.Div([
@@ -54,15 +59,16 @@ layout =      html.Div([
         
     html.Div([
         html.Div([
-            # html.Img(src=app.get_asset_url(nare), id = 'nkar_nare'),
+            
+            html.Img(src=nare, id = 'nkar_nare'),
             html.H3('Nare Abgaryan', id = 'nare_name')
         ]),
         html.Div([
-            # html.Img(src=app.get_asset_url(lusine), id = 'nkar_luso'),
+            html.Img(src=luso, id = 'nkar_luso'),
             html.H3('Lusine Babayan', id = 'luso_name')
         ]),
        html.Div([
-            # html.Img(src=app.get_asset_url(armine), id = 'nkar_armin'),
+            html.Img(src=armin, id = 'nkar_armin'),
             html.H3('Armine Khachatryan', id = 'armin_name')
         ]),  
         ], id = 'black_box_1')

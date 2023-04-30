@@ -7,12 +7,12 @@ import plotly.express as px
 from lifetimes import BetaGeoFitter
 from lifetimes import GammaGammaFitter
 from lifetimes.utils import calibration_and_holdout_data
-from zenq.visualizations.plot import Visuals
+# from zenq.visualizations.plot import Visuals
 import dash
 from dash import callback,Input, Output, State, dcc, html
 dash.register_page(
     __name__,
-    # path='/page3',
+     path='/Calculate',
     # title='Calculate',
     # name='Calculate'
 )
@@ -29,9 +29,9 @@ html.Div([
 
     html.Div([          
         html.Div([
-                    html.Div([
-                    dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
-                    ], className='rect1')
+                    # html.Div([
+                    # dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
+                    # ], className='rect1')
         ],className = 'rect1'),
           
         html.Div([], className = 'rect2') ,              
