@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import logging
 import os
+from zenq.logger import CustomFormatter, bcolors
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
 logger = logging.getLogger(os.path.basename(__file__))
 ch = logging.StreamHandler()
@@ -18,6 +19,8 @@ class data_prep():
     
     def __init__(self,data = None):
         self.data = data
+        self.cleaned_data = None
+
 
     def read_data(self, filename):
         try:
@@ -41,20 +44,27 @@ class data_prep():
     def num_of_null(self):
         return self.data.isnull().sum()
 
-def num_of_unique_in_column(self, column):
-    if column not in self.data.columns:
-        print(f"Error: column '{column}' does not exist in the data. Please try again.")
-        return None
-    else:
-        return self.data[column].nunique()
-    logger.error(f"{num_of_unique_in_column.__name__}")
+    def num_of_unique_in_column(self, column):
+        if column not in self.data.columns:
+            print(f"Error: column '{column}' does not exist in the data. Please try again.")
+            return None
+        else:
+            logger.error(f"{self.num_of_unique_in_column.__name__}")
+            return self.data[column].nunique()
+         
     
     def final_data(self):
-
+        
+        if self.data is None:
+            print("Error: No data found. Please call the 'read_data' method first to load the data.")
+            return None
         data = self.data.copy() 
         data = data.drop_duplicates()
         data = data.dropna()
-        logger.info(f"{final_data.__name__}")
+        self.cleaned_data = data
+        logger.error(f"{self.final_data.__name__}")
+        logger.warning(f"{self.final_data.__name__}")
+
         return data
 
 
