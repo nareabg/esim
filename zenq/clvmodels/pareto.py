@@ -18,6 +18,18 @@ from datetime import datetime, timedelta
 from scipy.special import gammaln, hyp2f1, betaln, logsumexp
 from scipy.optimize import minimize
  
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
+logger = logging.getLogger(os.path.basename(__file__))
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(CustomFormatter())
+file_handler = logging.FileHandler('logs.log')
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(CustomFormatter())
+
+logger.addHandler(file_handler)
+logger.addHandler(ch)
 
 class Model():
     
@@ -69,6 +81,8 @@ class Model():
         cltv_df = cltv_df[cltv_df["recency"] > 0]
         cltv_df = cltv_df[cltv_df["T"] > 0]
         cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
+        logger.info(f"{cltv_df.__name__}")
+
         return cltv_df
         
     def rfm(self):
@@ -93,6 +107,8 @@ class Model():
         }
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
+        logger.info(f"{rfm.__name__}")
+        
         return rfm
     
     def fit_paretonbd(self):
@@ -119,7 +135,11 @@ class Model():
         's': [params_['s']],
         'beta': [params_['beta']]
         })
+        print(model_params)
         model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
+        logger.info(f"{model_params.__name__}")
+        logger.error(f"{model_params.__name__}")
+
         return model_params
         
     
@@ -131,7 +151,7 @@ class Model():
         # T = cltv_df['T']
         # freq = 'D' # days
         number_of_days_list = [30, 90, 180, 360]
-        Prediction = pd.DataFrame({'Customer': cltv_df['customer_id']})
+        predict_paretonbd = pd.DataFrame({'Customer': cltv_df['customer_id']})
         for days in number_of_days_list:
             cltv_df[f'expected_purchases_{days}'] = model.conditional_expected_number_of_purchases_up_to_time(
                 days,
@@ -139,9 +159,11 @@ class Model():
                 cltv_df['recency'].values,
                 cltv_df['T'].values
             )
-            Prediction[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
-            Prediction.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
-        return Prediction
+            predict_paretonbd[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
+            predict_paretonbd.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
+        logger.info(f"{predict_paretonbd.__name__}")
+
+        return predict_paretonbd
 
  
     def customer_is_alive(self):
@@ -153,11 +175,13 @@ class Model():
         cltv_df['probability_customer_alive'] = model.conditional_probability_alive(
         
         cltv_df['frequency'].values, cltv_df['recency'].values, cltv_df['T'].values)
-        CustomerAlive = pd.DataFrame({
+        customer_is_alive = pd.DataFrame({
             'Customer': cltv_df['customer_id'],
             'Probability_of_being_Alive': cltv_df['probability_customer_alive']
         })        
-        CustomerAlive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
-        return CustomerAlive
+        customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
+        logger.info(f"{customer_is_alive.__name__}")
+
+        return customer_is_alive
 
  
