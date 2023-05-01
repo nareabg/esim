@@ -28,25 +28,24 @@ class Model():
     # engine = engine.connect(db_uri)
     # Base.metadata.create_all(sengine)
     # self.session = sessionmaker(bind=self.engine)()
-    def __init__(
-        self
-    ):
+    # def __init__(
+    #     self
+    # ):
+    #     params_ = {}
+        # cltv_df = self.cltv_df()
+        # cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
 
-        params_ = {}
-        cltv_df = self.cltv_df()
-        cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
-
-        predict_paretonbd = self.predict_paretonbd()
-        predict_paretonbd.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
+        # predict_paretonbd = self.predict_paretonbd()
+        # predict_paretonbd.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
        
-        customer_is_alive = self.customer_is_alive()
-        customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
+        # customer_is_alive = self.customer_is_alive()
+        # customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
        
-        model_params = self.model_params()
-        model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
+        # model_params = self.model_params()
+        # model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
         
-        rfm = self.rfm()   
-        rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
+        # rfm = self.rfm()   
+        # rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
         
     def cltv_df(self):
         # max_date = func.max(Facts.date)
@@ -61,8 +60,7 @@ class Model():
                                     all()
                                     
         cltv_df = pd.DataFrame(cltv_df, columns=['customer_id','min_date', 'recency', 'T', 'frequency', 'monetary'])
-        one_time_buyers = round(sum(cltv_df['frequency'] == 0)/float(len(cltv_df))*(100),2)
-        print('Percentage of customers that only bought once', one_time_buyers, '%')
+        # one_time_buyers = round(sum(cltv_df['frequency'] == 0)/float(len(cltv_df))*(100),2)
         cltv_df = cltv_df[cltv_df["monetary"] > 0]
         cltv_df = cltv_df[cltv_df["frequency"] > 0]
         cltv_df['T'] = cltv_df['T'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
@@ -70,7 +68,7 @@ class Model():
         cltv_df['recency'] = cltv_df['recency'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
         cltv_df = cltv_df[cltv_df["recency"] > 0]
         cltv_df = cltv_df[cltv_df["T"] > 0]
- 
+        cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
         return cltv_df
         
     def rfm(self):
@@ -94,7 +92,7 @@ class Model():
             r'5[4-5]': 'CHAMPIONS'
         }
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
-        
+        rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
         return rfm
     
     def fit_paretonbd(self):
@@ -109,7 +107,6 @@ class Model():
         # Fit Pareto/NBD model
         model = ParetoNBDFitter(penalizer_coef=0.0)
         model.fit(frequency, recency, T)
-
         return model 
     
     def model_params(self):
@@ -127,6 +124,7 @@ class Model():
         's': [self.params_['s']],
         'beta': [self.params_['beta']]
         })
+        model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
         return model_params
         
     
@@ -149,7 +147,7 @@ class Model():
                 cltv_df['T'].values
             )
             Prediction[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
-
+        Prediction.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
         return Prediction
 
  
@@ -166,6 +164,7 @@ class Model():
             'Customer': cltv_df['customer_id'],
             'Probability_of_being_Alive': cltv_df['probability_customer_alive']
         })        
+        CustomerAlive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
         return CustomerAlive
 
  

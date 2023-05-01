@@ -45,7 +45,7 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
     """
     # Read the CSV file into a pandas DataFrame
     df = pd.read_csv(filename)
-    print(f"Inserting facts for customer {customer_id} from file {filename}")
+    print(f"Inserting facts for {customer_id} from file {filename}")
     # Loop through the rows of the DataFrame and insert each one into the database
     for i, row in df.iterrows():
         fact = Facts(
