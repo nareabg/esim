@@ -16,6 +16,8 @@ from .config import db_uri
 from zenq.logger import CustomFormatter, bcolors
 import logging
 import os
+# from zenq.datapreparation.preparation import data_prep
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
 logger = logging.getLogger(os.path.basename(__file__))
 # create console handler with a higher log level
@@ -79,17 +81,17 @@ session = Session()
 #             continue
 #     print("Finished inserting facts")
 #     session.close()
-
+# data_prep = data_prep()
 def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, total_price):
-    try:
+    # try:
         # Read the CSV file into a pandas DataFrame
-        df = pd.read_csv(filename)
-    except FileNotFoundError:
-        print(f"Error: File {filename} not found. Please try again.")
-        return
-    except pd.errors.EmptyDataError:
-        print(f"Error: File {filename} is empty. Please try again.")
-        return
+    # df = pd.read_csv(filename)
+    # except FileNotFoundError:
+    #     print(f"Error: File {filename} not found. Please try again.")
+    #     return
+    # except pd.errors.EmptyDataError:
+    #     print(f"Error: File {filename} is empty. Please try again.")
+    #     return
 
     # Check if all required columns are present in the DataFrame
     required_columns = [customer_id, gender, invoice_id, date, quantity, total_price]
