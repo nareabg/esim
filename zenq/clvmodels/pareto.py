@@ -24,7 +24,7 @@ class Model():
     Facts = Facts()
     metadata, engine = Facts.connect_to_db(db_uri)
     session = sessionmaker(bind=engine)()
-    # params_ = {}
+    params_ = {}
     # engine = engine.connect(db_uri)
     # Base.metadata.create_all(sengine)
     # self.session = sessionmaker(bind=self.engine)()
@@ -96,33 +96,28 @@ class Model():
         return rfm
     
     def fit_paretonbd(self):
-
         cltv_df = self.cltv_df()
-        print(cltv_df)
         # Check inputs for Pareto/NBD model
-        frequency = cltv_df['frequency']
-        recency = cltv_df['recency']
-        T = cltv_df['T']
-        _check_inputs(frequency, recency, T)
+        _check_inputs(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         # Fit Pareto/NBD model
         model = ParetoNBDFitter(penalizer_coef=0.0)
-        model.fit(frequency, recency, T)
+        model.fit(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         return model 
     
     def model_params(self):
         
         model = self.fit_paretonbd()
-        self.params_ = pd.Series({
+        params_ = pd.Series({
         'r':  model.params_['r'],
         'alpha':  model.params_['alpha'],
         's':  model.params_['s'],
         'beta':  model.params_['beta']
         })
         model_params = pd.DataFrame({
-        'r': [self.params_['r']],
-        'alpha': [self.params_['alpha']],
-        's': [self.params_['s']],
-        'beta': [self.params_['beta']]
+        'r': [params_['r']],
+        'alpha': [params_['alpha']],
+        's': [params_['s']],
+        'beta': [params_['beta']]
         })
         model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
         return model_params
@@ -131,14 +126,12 @@ class Model():
     def predict_paretonbd(self):
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
-        frequency = cltv_df['frequency']
-        recency = cltv_df['recency']
-        T = cltv_df['T']
-        freq = 'D' # days
+        # frequency = cltv_df['frequency']
+        # recency = cltv_df['recency']
+        # T = cltv_df['T']
+        # freq = 'D' # days
         number_of_days_list = [30, 90, 180, 360]
-
         Prediction = pd.DataFrame({'Customer': cltv_df['customer_id']})
-
         for days in number_of_days_list:
             cltv_df[f'expected_purchases_{days}'] = model.conditional_expected_number_of_purchases_up_to_time(
                 days,
@@ -147,7 +140,7 @@ class Model():
                 cltv_df['T'].values
             )
             Prediction[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
-        Prediction.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
+            Prediction.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
         return Prediction
 
  
