@@ -13,7 +13,21 @@ import ipywidgets as widgets
 from IPython.display import display
 from sqlalchemy.exc import IntegrityError
 from .config import db_uri
+from zenq.logger import CustomFormatter, bcolors
+import logging
+import os
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
+logger = logging.getLogger(os.path.basename(__file__))
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(CustomFormatter())
+file_handler = logging.FileHandler('logs.log')
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(CustomFormatter())
 
+logger.addHandler(file_handler)
+logger.addHandler(ch)
 
 engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
@@ -102,5 +116,12 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
             session.rollback()
             print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
             continue
+    logger.error(f"{insert_facts.__name__}")
+    logger.warning(f"{insert_facts.__name__}")  
+    logger.info(f"{insert_facts.__name__}")
+    
     print("Finished inserting facts")
+    
+          
+
     session.close()
