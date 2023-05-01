@@ -27,9 +27,11 @@ class data_prep():
             self.data = pd.read_csv(filename)
         except FileNotFoundError:
             print(f"Error: File {filename} not found. Please try again.")
+            logger.error(f"{self.read_data.__name__}")
             return
         except pd.errors.EmptyDataError:
             print(f"Error: File {filename} is empty. Please try again.")
+            logger.error(f"{self.read_data.__name__}")
         return self.data.head()
    
     def shape(self):
