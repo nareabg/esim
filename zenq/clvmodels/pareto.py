@@ -20,15 +20,19 @@ from scipy.optimize import minimize
  
 
 class Model():
-
+    
+    Facts = Facts()
+    metadata, engine = Facts.connect_to_db(db_uri)
+    session = sessionmaker(bind=engine)()
+    # params_ = {}
+    # engine = engine.connect(db_uri)
+    # Base.metadata.create_all(sengine)
+    # self.session = sessionmaker(bind=self.engine)()
     def __init__(
         self
     ):
-        self.params_ = {}
-        self.engine = create_engine(db_uri)
-        Base.metadata.create_all(self.engine)
-        self.session = sessionmaker(bind=self.engine)()
 
+        params_ = {}
         cltv_df = self.cltv_df()
         cltv_df.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
 
@@ -66,7 +70,6 @@ class Model():
         cltv_df['recency'] = cltv_df['recency'].astype('timedelta64[D]').astype(float).map('{:.0f}'.format).astype(int)       
         cltv_df = cltv_df[cltv_df["recency"] > 0]
         cltv_df = cltv_df[cltv_df["T"] > 0]
-        
  
         return cltv_df
         
@@ -162,8 +165,7 @@ class Model():
         CustomerAlive = pd.DataFrame({
             'Customer': cltv_df['customer_id'],
             'Probability_of_being_Alive': cltv_df['probability_customer_alive']
-        })
-        
+        })        
         return CustomerAlive
 
  

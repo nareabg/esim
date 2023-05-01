@@ -16,24 +16,17 @@ class Facts(Base):
         engine = create_engine(db_uri)
         Session = sessionmaker(bind=engine)
         metadata = Base.metadata
-        # Create the initial schema
         with engine.connect() as conn:
             try:
                 conn.execute(CreateSchema('initial', if_not_exists=True))
             except exc.SQLAlchemyError:
                 pass
-
-        # Create the result schema
         with engine.connect() as conn:
             try: 
                 conn.execute(CreateSchema('result',  if_not_exists=True))
             except exc.SQLAlchemyError:
-                pass
-        
+                pass       
         return metadata, engine
-
-        
-      
  
     __tablename__ = 'Facts'
     __table_args__ = {'schema': 'initial'}
@@ -41,15 +34,10 @@ class Facts(Base):
     id = Column(Integer, primary_key=True)
     customer_id = Column(String(50), nullable=False)
     gender = Column(String(10))
-    # location_id = Column(String(50), nullable=False)
-    # location_name = Column(String(50), nullable=False)
     invoice_id = Column(String(50),unique= True, nullable=False)
     date = Column(DateTime, nullable=False)
     quantity = Column(Float, nullable=False)
-    total_price = Column(Float, nullable=False)
-        
-        
-        
+    total_price = Column(Float, nullable=False)   
         
     @property
     def unit_price(self):
@@ -66,7 +54,6 @@ class Facts(Base):
         frequency = Column(Integer, nullable=False)
         monetary = Column(Float, nullable=False)
 
-    # Create the CustomerAlive table
     class CustomerAlive(Base):
         __tablename__ = 'CustomerAlive'
         __table_args__ = {'schema': 'result'}
@@ -74,7 +61,6 @@ class Facts(Base):
         Customer = Column(String(50), nullable=False)
         Probability_of_being_Alive = Column(Float, nullable=False)
 
-    # Create the Prediction table
     class Prediction(Base):
         __tablename__ = 'Prediction'
         __table_args__ = {'schema': 'result'}
@@ -86,7 +72,6 @@ class Facts(Base):
         Expected_Purchases_360 = Column(Float, nullable=False)
         
     class RFMScore(Base):
-        
         __tablename__ = 'RFMScore'
         __table_args__ = {'schema': 'result'}
         id = Column(Integer, primary_key=True)
@@ -97,8 +82,7 @@ class Facts(Base):
         RFM_SCORE = Column(Integer, nullable=False)
         segment = Column(String(50), nullable=False)
         
-    class ParetoParameters(Base):
-                    
+    class ParetoParameters(Base):     
         __tablename__ = 'ParetoParameters'
         __table_args__ = {'schema': 'result'}        
         id = Column(Integer, primary_key=True)
@@ -106,6 +90,4 @@ class Facts(Base):
         alpha = Column(Float, nullable=False)
         s = Column(Float, nullable=False)
         beta = Column(Float, nullable=False)
-        
-       
        
