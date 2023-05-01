@@ -3,9 +3,11 @@ from __future__ import division
 from zenq.api.tables import Base, Facts 
 from zenq.api.config import db_uri
 import sqlalchemy 
+from zenq.logger import CustomFormatter, bcolors
 from sqlalchemy.orm import load_only, relationship, joinedload, sessionmaker
 from sqlalchemy import func, create_engine      
 import logging
+import os
 import lifetimes
 from lifetimes import BetaGeoFitter, ParetoNBDFitter
 from lifetimes.utils import summary_data_from_transaction_data, _check_inputs, _scale_time
@@ -85,7 +87,7 @@ class Model():
 
         return cltv_df
         
-    def rfm(self):
+    def rfm_score(self):
         cltv_df = self.cltv_df() 
         rfm = pd.DataFrame()
         rfm['customer_id'] = cltv_df['customer_id']
@@ -107,7 +109,7 @@ class Model():
         }
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{rfm.__name__}")
+        logger.info(f"{rfm_score.__name__}")
         
         return rfm
     
@@ -129,18 +131,18 @@ class Model():
         's':  model.params_['s'],
         'beta':  model.params_['beta']
         })
-        model_params = pd.DataFrame({
+        params = pd.DataFrame({
         'r': [params_['r']],
         'alpha': [params_['alpha']],
         's': [params_['s']],
         'beta': [params_['beta']]
         })
-        print(model_params)
-        model_params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
+        print(params)
+        params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{model_params.__name__}")
         logger.error(f"{model_params.__name__}")
 
-        return model_params
+        return params
         
     
     def predict_paretonbd(self):
@@ -151,7 +153,7 @@ class Model():
         # T = cltv_df['T']
         # freq = 'D' # days
         number_of_days_list = [30, 90, 180, 360]
-        predict_paretonbd = pd.DataFrame({'Customer': cltv_df['customer_id']})
+        predict_paretonbd_d = pd.DataFrame({'Customer': cltv_df['customer_id']})
         for days in number_of_days_list:
             cltv_df[f'expected_purchases_{days}'] = model.conditional_expected_number_of_purchases_up_to_time(
                 days,
@@ -159,27 +161,27 @@ class Model():
                 cltv_df['recency'].values,
                 cltv_df['T'].values
             )
-            predict_paretonbd[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
-            predict_paretonbd.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
+            predict_paretonbd_d[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
+            predict_paretonbd_d.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{predict_paretonbd.__name__}")
 
-        return predict_paretonbd
+        return predict_paretonbd_d
 
  
     def customer_is_alive(self):
-        model = self.fit_paretonbd()
-        cltv_df = self.cltv_df()
-        frequency = cltv_df['frequency']
-        recency = cltv_df['recency']
-        T = cltv_df['T']
+        # model = self.fit_paretonbd()
+        # cltv_df = self.cltv_df()
+        # frequency = cltv_df['frequency']
+        # recency = cltv_df['recency']
+        # T = cltv_df['T']
         cltv_df['probability_customer_alive'] = model.conditional_probability_alive(
         
         cltv_df['frequency'].values, cltv_df['recency'].values, cltv_df['T'].values)
-        customer_is_alive = pd.DataFrame({
+        customer_alive = pd.DataFrame({
             'Customer': cltv_df['customer_id'],
             'Probability_of_being_Alive': cltv_df['probability_customer_alive']
         })        
-        customer_is_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
+        customer_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{customer_is_alive.__name__}")
 
         return customer_is_alive

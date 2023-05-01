@@ -31,6 +31,7 @@ class db():
         
         if not database_exists(engine.url):
             create_database(engine.url)
+        metadata.drop_all(bind=engine)
         metadata.create_all(bind=engine)
         
         logger.info(f"{db.__name__}")           

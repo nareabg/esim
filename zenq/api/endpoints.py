@@ -116,12 +116,10 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
             session.rollback()
             print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
             continue
+    print("Finished inserting facts")
+           
+    session.close()
+
     logger.error(f"{insert_facts.__name__}")
     logger.warning(f"{insert_facts.__name__}")  
     logger.info(f"{insert_facts.__name__}")
-    
-    print("Finished inserting facts")
-    
-          
-
-    session.close()
