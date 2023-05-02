@@ -35,7 +35,7 @@ app.layout= html.Div([
     html.Div([
         html.Div([    
             html.Img(src=app.get_asset_url(image_filename), id = 'esim')
-        ], id=''),
+        ], id='image'),
          html.Div([   
                  html.Div([
             dcc.Link(html.Button(page['name'], className="navigation",  style={'font-size': '24px', 'font-family': 'Hanuman'}), href=page['path'])
@@ -45,10 +45,10 @@ app.layout= html.Div([
 
         # content of each page
         dash.page_container   
-                 ],className = 'twelve columns' )
+                 ],className = 'rectangle1' )
             
-        ], className='rectangle1'),  
-], id = 'layout1')
+        ],),  
+],)
 
     #        	html.Div([
     #         dcc.Link(html.Button('Home', id=''), href='/')

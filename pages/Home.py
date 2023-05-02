@@ -44,7 +44,7 @@ layout =      html.Div([
             html.Img(src=image_url, id = 'nkar')
         ]),
     ], id = 'box'),
-
+    html.Div([
     html.Div([           
             html.Div([
                 html.H2('OUR GIT_HUB', id = 'our_text'),],),
@@ -72,7 +72,8 @@ layout =      html.Div([
             html.H3('Armine Khachatryan', id = 'armin_name')
         ]),  
         ], id = 'black_box_1')
- 
-  ], id='page_layout2')
+    ], id = 'container'),
+])
+#   ], id='page_layout2')
     
     

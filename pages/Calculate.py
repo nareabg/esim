@@ -19,28 +19,28 @@ dash.register_page(
 
 
 layout =  html.Div([
-html.Div([
+    html.Div([
 
             dcc.Upload(id='upload_buttom',
                 children=html.Div(['Drag and Drop or ', html.A('Select Files')], id = 'csv_text')
                 ),
 
-    ], className = 'twelve columns'),
+    ], className = 'black_box33'),
 
     html.Div([          
         html.Div([
                     html.Div([
                     dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
                     ])
-        ],className = 'six columns'),
+        ],className = 'rect1'),
           
         html.Div([
                 html.Div([
                     dcc.Graph(id='', figure=Visuals().gender_price())
                 ])
             
-            ], className = 'six columns') ,              
-    ], className = 'twelve columns'),
+            ], className = 'rect2') ,              
+    ],  ),
 
     html.Div([  
                       
