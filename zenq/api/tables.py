@@ -42,6 +42,17 @@ class Facts(Base):
     @property
     def unit_price(self):
         return self.total_price / self.quantity
+    
+    class LOGS(Base):
+        __tablename__ = 'LOGS'
+        __table_args__ = {'schema': 'initial'}
+        id = Column(Integer, primary_key=True)
+        FILE_NAME = Column(String(200), nullable=False)
+        FUNC_NAME = Column(String(200), nullable=False)
+        FILE_NO = Column(String(200), nullable=False)
+        MESSAGE = Column(String(200), nullable=False)
+        LOAD_TIME = Column(DateTime, nullable=False)
+       
                 
     class CLTV(Base):
         __tablename__ = 'CLTV'

@@ -28,11 +28,27 @@ file_handler.setFormatter(CustomFormatter())
 
 logger.addHandler(file_handler)
 logger.addHandler(ch)
-
+LOGS = Facts.LOGS
+# Facts = Facts()
+# metadata, engine = Facts.connect_to_db(db_uri)
+# session = sessionmaker(bind=engine)()
 engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()
- 
+
+def insert_log(filename, func_name, file_no, message):
+    session = Session()
+    log = LOGS(
+        FILE_NAME=filename,
+        FUNC_NAME=func_name,
+        FILE_NO=file_no,
+        MESSAGE=message,
+        LOAD_TIME=datetime.now()
+    )
+    session.add(log)
+    session.commit()
+    session.close()
+    
 def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, total_price):
     data = data_prep()
     try:
@@ -72,7 +88,9 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
     print("Finished inserting facts")
            
     session.close()
-
+    
+    insert_log(os.path.basename(__file__), 'insert_facts', 1, 'Facts have been inserted successfully.')
+   
     logger.error(f"{insert_facts.__name__}")
     logger.warning(f"{insert_facts.__name__}")  
     logger.info(f"{insert_facts.__name__}")

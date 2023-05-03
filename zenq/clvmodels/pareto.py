@@ -19,6 +19,7 @@ from pandas import DataFrame
 from datetime import datetime, timedelta
 from scipy.special import gammaln, hyp2f1, betaln, logsumexp
 from scipy.optimize import minimize
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
 logger = logging.getLogger(os.path.basename(__file__))
 ch = logging.StreamHandler()
@@ -58,7 +59,8 @@ class Model():
         cltv = cltv[cltv["recency"] > 0]
         cltv = cltv[cltv["T"] > 0]
         cltv.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.cltv_df.__name__}")
+        logger.info(f"{self.cltv_df.__name__}, {len(cltv)} rows written to CLTV table")
+        insert_log(os.path.basename(__file__), cltv_df.__name__, f"{len(cltv)} rows written to CLTV table")
 
         return cltv
         
@@ -85,7 +87,8 @@ class Model():
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{self.rfm_score.__name__}")
-        
+        insert_log(os.path.basename(__file__), rfm_score.__name__, f"{len(rfm)} rows written to RFMScore table")
+
         return rfm
     
     def fit_paretonbd(self):
@@ -93,6 +96,8 @@ class Model():
         _check_inputs(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         model = ParetoNBDFitter(penalizer_coef=0.0)
         model.fit(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
+        insert_log(os.path.basename(__file__), fit_paretonbd.__name__, "Model created successfully")
+        logger.info(f"{self.model_params.__name__}")
         return model 
     
     def model_params(self):

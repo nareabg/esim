@@ -38,7 +38,36 @@ class db():
 
         print("done")
 
+ 
+
 if __name__ == "__main__":
     mydb = db()
     mydb.main()
+    
+# class CustomHandler(logging.StreamHandler):
 
+#     def __init__(self):
+#         pass
+#     def emit(self,record):
+#         if record:
+#             seesion.add(f"INSERT INTO LOGS VALUES ('{record.filename}', '{record.funcname}', '{record.lineno}','{reccord.msg}', SYSDATE())")
+
+# def main(logger):
+#     try:
+#         logger.debug('This is debug mode')
+#         logger.info('This is info mode')
+#         logger.warning('This is warning mode')
+#         logger.error('This is error mode')
+#         out = 1/0
+#     except ZeroDivisionError as e:
+#         logger.critical(f'This is critical mode {e}')
+        
+
+# if __name__ == "__main__":
+#     mydb = db()
+#     mydb.main()
+#     logger = logging.Logger('test')
+#     logger.setLevel(logging.DEBUG)
+#     customhandler = CustomHandler()
+#     logger.addHandler(customhandler)
+#     main(logger)

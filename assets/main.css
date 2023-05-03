@@ -652,3 +652,39 @@ color: #4c177c;
   background: #ffffff;
 } 
 
+
+#datatable-upload {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#insert-data-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+#columns-mapping {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#insert-data-button-2 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
