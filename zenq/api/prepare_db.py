@@ -8,7 +8,7 @@ import os
 from abc import ABC, abstractmethod
 from zenq.logger import CustomFormatter, bcolors
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
+logging.basicConfig(level=logging.DEBUG, format = "/%(asctime)s / %(name)s / %(levelname)s / %(message)s /%(filename)s/%(lineno)d/")
 logger = logging.getLogger(os.path.basename(__file__))
 # create console handler with a higher log level
 ch = logging.StreamHandler()
@@ -34,7 +34,7 @@ class db():
         metadata.drop_all(bind=engine)
         metadata.create_all(bind=engine)
         
-        logger.info(f"{db.__name__}")           
+        logger.info(f"{db.__name__}/ successfully done")           
 
         print("done")
 

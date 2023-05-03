@@ -20,12 +20,12 @@ from datetime import datetime, timedelta
 from scipy.special import gammaln, hyp2f1, betaln, logsumexp
 from scipy.optimize import minimize
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s/ %(funcName)s/ %(msg)s/')
 logger = logging.getLogger(os.path.basename(__file__))
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 ch.setFormatter(CustomFormatter())
-file_handler = logging.FileHandler('logs.log')
+file_handler = logging.FileHandler('zenq/api/logs.log')
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(CustomFormatter())
 logger.addHandler(file_handler)
@@ -60,7 +60,7 @@ class Model():
         cltv = cltv[cltv["T"] > 0]
         cltv.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{self.cltv_df.__name__}, {len(cltv)} rows written to CLTV table")
-        insert_log(os.path.basename(__file__), cltv_df.__name__, f"{len(cltv)} rows written to CLTV table")
+        # insert_log(os.path.basename(__file__), cltv_df.__name__, f"{len(cltv)} rows written to CLTV table")
 
         return cltv
         
@@ -87,7 +87,7 @@ class Model():
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{self.rfm_score.__name__}")
-        insert_log(os.path.basename(__file__), rfm_score.__name__, f"{len(rfm)} rows written to RFMScore table")
+        # insert_log(os.path.basename(__file__), rfm_score.__name__, f"{len(rfm)} rows written to RFMScore table")
 
         return rfm
     

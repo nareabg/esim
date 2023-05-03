@@ -43,17 +43,18 @@ class Facts(Base):
     def unit_price(self):
         return self.total_price / self.quantity
     
+
     class LOGS(Base):
         __tablename__ = 'LOGS'
         __table_args__ = {'schema': 'initial'}
         id = Column(Integer, primary_key=True)
-        FILE_NAME = Column(String(200), nullable=False)
-        FUNC_NAME = Column(String(200), nullable=False)
-        FILE_NO = Column(String(200), nullable=False)
-        MESSAGE = Column(String(200), nullable=False)
-        LOAD_TIME = Column(DateTime, nullable=False)
-       
-                
+        level = Column(String(10), nullable=False)
+        file_name = Column(String(200), nullable=False)
+        func_name = Column(String(200), nullable=False)
+        message = Column(String(2000), nullable=False)
+        line_number = Column(Integer, nullable=False)
+        load_time = Column(DateTime, nullable=False)     
+              
     class CLTV(Base):
         __tablename__ = 'CLTV'
         __table_args__ = {'schema': 'result'}
