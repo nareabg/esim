@@ -29,8 +29,14 @@ Facts = Facts()
 metadata, engine = Facts.connect_to_db(db_uri)
 
 class db():
+    """ 
+        class provides methods for creating and managing a database 
+    """
  
     def main(self):
+        """
+            initializing the database, dropping and creating tables using metadata
+        """
         logger.info(f"{db.__name__}/Initializing the database...")
         
         try:

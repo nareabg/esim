@@ -36,6 +36,7 @@ logger.addHandler(ch)
 
 # Define the Model class
 class Model():
+    """ """
     
     # Set up the Facts table, metadata, engine, and session
     Facts = Facts()
@@ -44,6 +45,7 @@ class Model():
     params_ = {}
 
     def cltv_df(self):
+        """ """
         # Query the database to get customer transaction data and compute customer lifetime value metrics
         cltv_df = self.session.query(Facts.customer_id,
                                     func.DATE_TRUNC('day', func.min(Facts.date)),
@@ -70,6 +72,7 @@ class Model():
         return cltv
         
     def rfm_score(self):
+        """ """
         # calculate the customer lifetime value using the method cltv_df() and assign it to the variable cltv_df
         cltv_df = self.cltv_df() 
         
@@ -108,6 +111,7 @@ class Model():
         return rfm
     
     def fit_paretonbd(self):
+        """ """
         cltv_df = self.cltv_df()
         _check_inputs(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         # instantiate the Pareto/NBD model
@@ -118,6 +122,7 @@ class Model():
         return model 
     
     def model_params(self):
+        """ """
         
         # fit the Pareto/NBD model
         model = self.fit_paretonbd()
@@ -145,6 +150,7 @@ class Model():
         
     
     def predict_paretonbd(self):
+        """ """
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         # list of number of days for which we want to predict expected purchases
@@ -167,6 +173,7 @@ class Model():
 
  
     def customer_is_alive(self):
+        """ """
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         # calculate the probability that the customer is still alive

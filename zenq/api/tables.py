@@ -26,7 +26,23 @@ logger.addHandler(ch)
 Base = declarative_base()
 
 class Facts(Base):
+    """
+    class defines the structure and behavior of database tables in both schemas
+    """
     def connect_to_db(self, db_uri):
+        """
+
+        Parameters
+        ----------
+        db_uri : specifies the location and credentials to connect to a PostgreSQL database 
+                 (is defined by importing from config.py)
+            
+
+        Returns
+        -------
+        metadata
+        engine
+        """
         logger.info(f"{self.connect_to_db.__name__}/Connecting to the database.") 
         # Create a database engine
         engine = create_engine(db_uri)
@@ -63,13 +79,18 @@ class Facts(Base):
     quantity = Column(Float, nullable=False)
     total_price = Column(Float, nullable=False)   
      
-     # Define a property for unit price, which is calculated by dividing total price by quantity
     @property
     def unit_price(self):
+        """
+            calculates the price per unit of the product purchased in a transaction
+        """
         return self.total_price / self.quantity
     
-    # Define the LOGS table
+
     class LOGS(Base):
+        """ 
+            define the LOGS table
+        """
         __tablename__ = 'LOGS'
         __table_args__ = {'schema': 'initial'}
         id = Column(Integer, primary_key=True)
@@ -80,8 +101,11 @@ class Facts(Base):
         line_number = Column(Integer, nullable=False)
         load_time = Column(DateTime, nullable=False)     
     
-    # Define the CLTV table          
+          
     class CLTV(Base):
+        """ 
+            define the CLTV table    
+        """
         __tablename__ = 'CLTV'
         __table_args__ = {'schema': 'result'}
         id = Column(Integer, primary_key=True)
@@ -92,8 +116,10 @@ class Facts(Base):
         frequency = Column(Integer, nullable=False)
         monetary = Column(Float, nullable=False)
 
-    # Define the CustomerAlive table
     class CustomerAlive(Base):
+        """ 
+            define the CustomerAlive table
+        """
         __tablename__ = 'CustomerAlive'
         __table_args__ = {'schema': 'result'}
         id = Column(Integer, primary_key=True)
@@ -102,6 +128,9 @@ class Facts(Base):
 
     # Define the Prediction table
     class Prediction(Base):
+        """ 
+            define the Prediction table
+        """
         __tablename__ = 'Prediction'
         __table_args__ = {'schema': 'result'}
         id = Column(Integer, primary_key=True)
@@ -111,8 +140,11 @@ class Facts(Base):
         Expected_Purchases_180 = Column(Float, nullable=False)
         Expected_Purchases_360 = Column(Float, nullable=False)
     
-    # Define the RFMScore table    
+  
     class RFMScore(Base):
+        """
+            define the RFMScore table    
+        """
         __tablename__ = 'RFMScore'
         __table_args__ = {'schema': 'result'}
         id = Column(Integer, primary_key=True)
@@ -122,9 +154,11 @@ class Facts(Base):
         monetary_score=Column(Integer, nullable=False)
         RFM_SCORE = Column(Integer, nullable=False)
         segment = Column(String(50), nullable=False)
-    
-    # Define the ParetoParameters table    
+         
     class ParetoParameters(Base):     
+        """
+            define the ParetoParameters table
+        """
         __tablename__ = 'ParetoParameters'
         __table_args__ = {'schema': 'result'}        
         id = Column(Integer, primary_key=True)

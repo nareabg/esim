@@ -33,6 +33,17 @@ session = Session()
 
 
 def insert_logs_to_db(log_file_path='zenq/api/logs.log'):
+    """
+
+    Parameters
+    ----------
+    log_file_path :
+         (Default value = 'zenq/api/logs.log')
+
+    Returns
+    -------
+    inserts data into database LOGS table
+    """
     with open(log_file_path, 'r') as f:
         log_contents = f.read()
         
@@ -61,6 +72,17 @@ def insert_logs_to_db(log_file_path='zenq/api/logs.log'):
     session.close()
 
 def update_log(log_file_path='zenq/api/logs.log'):
+    """
+
+    Parameters
+    ----------
+    log_file_path :
+         (Default value = 'zenq/api/logs.log')
+
+    Returns
+    -------
+    inserts into LOGS table data that are bigger than the mac date in the database
+    """
     
     # Get the max timestamp from the LOGS table
     max_time = session.query(func.max(LOGS.load_time)).scalar()
@@ -96,6 +118,29 @@ def update_log(log_file_path='zenq/api/logs.log'):
 
         
 def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, total_price):
+    """
+
+    Parameters
+    ----------
+    filename : the name of the file (ex. globbing.csv)
+        
+    customer_id : customer id column mapping
+        
+    gender : gender column mapping
+        
+    invoice_id : transaction id column mapping
+        
+    date : date column mapping
+        
+    quantity : quantity/weight column mapping
+        
+    total_price : price column mapping
+        
+
+    Returns
+    -------
+    inserts data into FACTS table of database
+    """
     
     # create an instance of the data_prep class
     data = data_prep()

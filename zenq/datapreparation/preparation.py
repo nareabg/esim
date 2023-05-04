@@ -17,6 +17,7 @@ logger.addHandler(file_handler)
 logger.addHandler(ch)
 
 class data_prep():
+    """ """
     
     def __init__(self,data = None):
         self.data = data
@@ -24,6 +25,17 @@ class data_prep():
 
     # method to read csv data
     def read_data(self, filename):
+        """
+
+        Parameters
+        ----------
+        filename :
+            
+
+        Returns
+        -------
+
+        """
         try:
             self.data = pd.read_csv(filename)
         except FileNotFoundError:
@@ -35,22 +47,37 @@ class data_prep():
    
     # method to return shape of the data and list of column names
     def shape(self):
+        """ """
         return self.data.shape, list(self.data.columns)
     
     # method to return information about the data
     def info(self):
+        """ """
         return self.data.info()
     
     # method to return number of duplicate rows in the data
     def num_of_duplicate(self):
+        """ """
         return self.data.duplicated().sum()
 
     # method to return number of null values in the data
     def num_of_null(self):
+        """ """
         return self.data.isnull().sum()
 
     # method to return number of unique values in a specific column of the data
     def num_of_unique_in_column(self, column):
+        """
+
+        Parameters
+        ----------
+        column :
+            
+
+        Returns
+        -------
+
+        """
         if column not in self.data.columns:
             logger.error(f"{self.num_of_unique_in_column.__name__}/ Column '{column}' does not exist in the data. Please try again.")
             return None
@@ -59,6 +86,7 @@ class data_prep():
          
     # method to return cleaned data after removing duplicate rows and null values
     def final_data(self):
+        """ """
         
         if self.data is None:
             logger.error(f"{self.final_data.__name__}/ No data found. Please call the 'read_data' method first to load the data.")
