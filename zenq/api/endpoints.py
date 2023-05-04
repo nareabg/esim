@@ -39,21 +39,6 @@ engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def insert_log(filename, func_name, file_no, message):
-    session = Session()
-    log = LOGS(
-        FILE_NAME=filename,
-        FUNC_NAME=func_name,
-        FILE_NO=file_no,
-        MESSAGE=message,
-        LOAD_TIME=datetime.now()
-    )
-    session.add(log)
-    session.commit()
-    session.close()
-    
-
-
 
 def insert_logs_to_db(log_file_path='zenq/api/logs.log'):
     with open(log_file_path, 'r') as f:
