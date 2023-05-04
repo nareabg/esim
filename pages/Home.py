@@ -6,16 +6,16 @@ from dash import callback,Input, Output, State, dcc, html
 app = dash.Dash(__name__ )
 
 
-image_filename = 'w.jpg'  # replace with your image filename
+image_filename = 'w.jpg'  
 image_url = app.get_asset_url(image_filename)
 
-nare = 'nare.jpg'  # replace with your image filename
+nare = 'nare.jpg'  
 nare = app.get_asset_url(nare)
 
-luso = 'luso.jpg'  # replace with your image filename
+luso = 'luso.jpg' 
 luso = app.get_asset_url(luso)
 
-armin = 'armin.jpg'  # replace with your image filename
+armin = 'armin.jpg'  
 armin = app.get_asset_url(armin)
 
  

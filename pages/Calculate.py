@@ -43,7 +43,17 @@ server = Flask(__name__)
 app = dash.Dash(server=server)
 @server.route("/download/<path:path>")
 def download(path):
-    """Serve a file from the upload directory."""
+    """Serve a file from the upload directory.
+
+    Parameters
+    ----------
+    path :
+        
+
+    Returns
+    -------
+
+    """
     return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
 layout =  html.Div([
@@ -134,7 +144,19 @@ layout =  html.Div([
     ])
 
 def save_file(name, content):
-    """Decode and store a file uploaded with Plotly Dash."""
+    """Decode and store a file uploaded with Plotly Dash.
+
+    Parameters
+    ----------
+    name :
+        
+    content :
+        
+
+    Returns
+    -------
+
+    """
     data = content.encode("utf8").split(b";base64,")[1]
     with open(os.path.join(UPLOAD_DIRECTORY, name), "wb") as fp:
         fp.write(base64.decodebytes(data))
@@ -149,7 +171,17 @@ def uploaded_files():
     return files
 
 def file_download_link(filename):
-    """Create a Plotly Dash 'A' element that downloads a file from the app."""
+    """Create a Plotly Dash 'A' element that downloads a file from the app.
+
+    Parameters
+    ----------
+    filename :
+        
+
+    Returns
+    -------
+
+    """
     location = "/download/{}".format(urlquote(filename))
     return html.A(filename, href=location)
 
@@ -158,7 +190,19 @@ def file_download_link(filename):
     Output("file-list", "children"),
     [Input("upload_buttom", "filename"), Input("upload_buttom", "contents")])
 def update_output(uploaded_filenames, uploaded_file_contents):
-    """Save uploaded files and regenerate the file list."""
+    """Save uploaded files and regenerate the file list.
+
+    Parameters
+    ----------
+    uploaded_filenames :
+        
+    uploaded_file_contents :
+        
+
+    Returns
+    -------
+
+    """
 
     if uploaded_filenames is not None and uploaded_file_contents is not None:
         for name, data in zip(uploaded_filenames, uploaded_file_contents):
