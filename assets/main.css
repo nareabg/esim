@@ -12,6 +12,23 @@
   top: 20px;
 } 
 
+#submit_button{
+left: 820px;
+}
+#output-data-upload{
+  width: 96px;
+  height: 21px;
+  background: #1e5f1d;
+  
+}
+#column_inputs{
+position: relative;
+padding-top: 40px;
+padding-bottom: 20px;
+justify-content: center;
+align-items: center; 
+}
+
 #detail_button{
   position: absolute;
   width: 296px;
@@ -616,7 +633,7 @@ color: #4c177c;
   width: 400px;
   height: 86px;
   left: 525px;
-  top: 70px;
+  top: 20px;
   
   background: #FFFFFF;
   border-radius: 30px;

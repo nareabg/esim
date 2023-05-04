@@ -56,62 +56,58 @@ def insert_log(filename, func_name, file_no, message):
 
 
 def insert_logs_to_db(log_file_path='zenq/api/logs.log'):
-    # Open the log file and read all its contents
     with open(log_file_path, 'r') as f:
         log_contents = f.read()
-
-    # Remove escape characters and color codes from the log lines
     log_contents = re.sub(r'\x1b\[\d+;\d+m', '', log_contents)
-
-    # Split the contents into individual lines
     log_lines = [line.split('\x1b[0m')[0] for line in log_contents.split('\n')]
     log_lines = [line for line in log_lines if line.strip()]
     print(type(log_lines))
-    # Define a regular expression to extract the required information from each line
-    # log_regex = re.compile(r"/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}),\d{3}\s/\s(.+?)\s/\s(.+?)\s/\s(.+?)\s/\s(.+?)/(\d+)/")
-    # log_pattern = re.compile(log_regex)
-
-    # Loop through each line, extract the required information, and add it to the database
     for line in log_lines:
         my_string = line
-        # Extract timestamp
         timestamp = my_string.split('/')[1].strip()
-        print(f"timestamp {timestamp}")
-         
-        # Extract filename
+        # print(f"timestamp {timestamp}")        
         filename = my_string.split('/')[2].strip()
-        print(f"filename {filename}")
-         
-        # Extract error level
+        # print(f"filename {filename}")         
         error_level = my_string.split('/')[3].strip()
-        print(f"error_level {error_level}")
-         
-        # Extract function name
+        # print(f"error_level {error_level}")
         function_name = my_string.split('/')[4].strip()
-        print(f"function_name {function_name}")
-        
-        # Extract message
+        # print(f"function_name {function_name}")
         my_message = my_string.split('/')[5].strip()
-        print(f"my_message {my_message}")
-        
-        # Extract line number
+        # print(f"my_message {my_message}")
         line_number = my_string.split('/')[7].strip().rstrip('/')
-        print(f"line_number {line_number}")
-       
+        # print(f"line_number {line_number}")
         load_time = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S,%f')
         log_obj = LOGS(level=error_level, file_name=filename, func_name=function_name, message=my_message, line_number=int(line_number), load_time=load_time)
         session.add(log_obj)
-    # # for line in log_lines:
-    #     match = log_pattern.match(line)
-    #     if match:
-    #         load_time_str, file_name, level, func_name, message, line_number = match.groups()
-    #         load_time = datetime.strptime(load_time_str, '%Y-%m-%d %H:%M:%S')
-    #         log_obj = LOGS(level=level, file_name=file_name, func_name=func_name, message=message, line_number=int(line_number), load_time=load_time)
-    #         session.add(log_obj)
-    # Commit the changes and close the session
     session.commit()
     session.close()
 
+def update_log(log_file_path='zenq/api/logs.log'):
+    # Get the max timestamp from the LOGS table
+    max_time = session.query(func.max(LOGS.load_time)).scalar()
+    if not max_time:
+        max_time = datetime.min
+
+    with open(log_file_path, 'r') as f:
+        log_contents = f.read()
+    log_contents = re.sub(r'\x1b\[\d+;\d+m', '', log_contents)
+    log_lines = [line.split('\x1b[0m')[0] for line in log_contents.split('\n')]
+    log_lines = [line for line in log_lines if line.strip()]
+
+    for line in log_lines:
+        my_string = line
+        timestamp = my_string.split('/')[1].strip()
+        load_time = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S,%f')
+        if load_time > max_time:
+            filename = my_string.split('/')[2].strip()
+            error_level = my_string.split('/')[3].strip()
+            function_name = my_string.split('/')[4].strip()
+            my_message = my_string.split('/')[5].strip()
+            line_number = my_string.split('/')[7].strip().rstrip('/')
+            log_obj = LOGS(level=error_level, file_name=filename, func_name=function_name, message=my_message, line_number=int(line_number), load_time=load_time)
+            session.add(log_obj)
+    session.commit()
+    session.close()
 
         
 def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, total_price):
@@ -150,7 +146,7 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
             session.rollback()
             print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
             continue
-    print("Finished inserting facts")
+    return "Finished inserting facts"
            
     session.close()
     

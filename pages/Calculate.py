@@ -13,6 +13,10 @@ from zenq.visualizations.plot import Visuals
 import dash
 import base64
 import io
+import os
+from flask import Flask
+
+
 from dash import callback,Input, Output, State, dcc, html
 from zenq.api.endpoints import insert_facts
 from zenq.api.tables import Facts
@@ -25,21 +29,84 @@ dash.register_page(
     # title='Calculate',
     # name='Calculate'
 )
-app = dash.Dash(__name__ )
-
-
+# app = dash.Dash(__name__ )
+ 
 engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()
  
+UPLOAD_DIRECTORY = os.path.join(os.getcwd(), 'tmp')
+
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
+server = Flask(__name__)
+app = dash.Dash(server=server)
+@server.route("/download/<path:path>")
+def download(path):
+    """Serve a file from the upload directory."""
+    return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
 
 layout =  html.Div([
     html.Div([
-
+        html.Div([
             dcc.Upload(id='upload_buttom',
-                children=html.Div(['Drag and Drop or ', html.A('Select Files')], id = 'csv_text')
-                ),
-        html.Div(id='output-data-upload'),
+                children=html.Div(['Drag and Drop or ', html.A('Select Files')], id = 'csv_text'),
+                ),        
+            html.H2("File List"),
+        html.Ul(id="file-list"),]),
+        html.Div([    
+            dcc.Input(
+                id='input1',
+                type='text',
+                placeholder='csv name(globbing.csv)',
+            ),
+            dcc.Input(
+                id='input1',
+                type='text',
+                placeholder='customer_id',
+            ),
+            
+            # Second input field
+            dcc.Input(
+                id='input2',
+                type='text',
+                placeholder='gender',
+            ),
+            
+            # Third input field
+            dcc.Input(
+                id='input3',
+                type='text',
+                placeholder='invoice_id',
+            ),
+            
+            # Fourth input field
+            dcc.Input(
+                id='input4',
+                type='text',
+                placeholder='date',
+            ),
+            
+            # Fifth input field
+            dcc.Input(
+                id='input5',
+                type='text',
+                placeholder='quantity',
+            ),
+            
+            # Sixth input field
+            dcc.Input(
+                id='input6',
+                type='text',
+                placeholder='total_price',
+            ),],id = 'column_inputs'), 
+         
+            html.Div(
+            html.Button('Submit', id='submit_button',  n_clicks=0),
+            style={'textAlign': 'center' }  # Center the button
+        ), 
+         
+        html.Div(id='output_div')
     ], className = 'black_box33'),
 
     html.Div([          
@@ -66,145 +133,43 @@ layout =  html.Div([
     ],className = 'pordz')
     ])
 
-# @app.callback(Output('output-data-upload', 'children'),
-#               Input('upload_buttom', 'contents'),
-#               State('upload_buttom', 'filename'))
-# def display_csv(contents, filename):
-#     if contents is not None:
-#         content_type, content_string = contents.split(',')
-#         decoded = base64.b64decode(content_string)
-#         try:
-#             if 'csv' in filename:
-#                 # Assume that the user uploaded a CSV file
-#                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
-#         except Exception as e:
-#             print(e)
-#             return html.Div(['There was an error processing this file.'])
-        
-#         columns = ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']
+def save_file(name, content):
+    """Decode and store a file uploaded with Plotly Dash."""
+    data = content.encode("utf8").split(b";base64,")[1]
+    with open(os.path.join(UPLOAD_DIRECTORY, name), "wb") as fp:
+        fp.write(base64.decodebytes(data))
 
-#         options = [{'label': col, 'value': col} for col in df.columns]
-#         dropdowns = [dcc.Dropdown(options=options, value='', placeholder=col, id=f'{col}-dropdown') for col in columns]
+def uploaded_files():
+    """List the files in the upload directory."""
+    files = []
+    for filename in os.listdir(UPLOAD_DIRECTORY):
+        path = os.path.join(UPLOAD_DIRECTORY, filename)
+        if os.path.isfile(path):
+            files.append(filename)
+    return files
 
-#         return html.Div([
-#             html.H5(filename),
-#             dcc.DataTable(
-#                 id='datatable-upload',
-#                 data=df.to_dict('records'),
-#                 columns=[{'name': col, 'id': col} for col in df.columns],
-#             ),
-#             html.Button('Insert Data', id='insert-data-button'),
-#             html.Div(dropdowns, id='columns-mapping'),
-#         ])
-# @app.callback(Output('columns-mapping', 'children'),
-#               Output('insert-data-button', 'style'),
-#               Input('insert-data-button', 'n_clicks'),
-#               State('datatable-upload', 'data'),
-#               State('customer_id_dropdown', 'value'),
-#               State('gender_dropdown', 'value'),
-#               State('invoice_id_dropdown', 'value'),
-#               State('date_dropdown', 'value'),
-#               State('quantity_dropdown', 'value'),
-#               State('total_price_dropdown', 'value'))
-# def display_columns_mapping(n_clicks, data, customer_id, gender, invoice_id, date, quantity, total_price):
-#     if n_clicks is None:
-#         return '', {'display': 'none'}
+def file_download_link(filename):
+    """Create a Plotly Dash 'A' element that downloads a file from the app."""
+    location = "/download/{}".format(urlquote(filename))
+    return html.A(filename, href=location)
+
+
+@app.callback(
+    Output("file-list", "children"),
+    [Input("upload_buttom", "filename"), Input("upload_buttom", "contents")])
+def update_output(uploaded_filenames, uploaded_file_contents):
+    """Save uploaded files and regenerate the file list."""
+
+    if uploaded_filenames is not None and uploaded_file_contents is not None:
+        for name, data in zip(uploaded_filenames, uploaded_file_contents):
+            save_file(name, data)
+
+    files = uploaded_files()
+    if len(files) == 0:
+        return [html.Li("No files yet!")]
+    else:
+        return [html.Li(file_download_link(filename)) for filename in files]
+
+if __name__ == "__main__":
+    app.run_server(debug=True, port=8058)
     
-#     if customer_id == '' or gender == '' or invoice_id == '' or date == '' or quantity == '' or total_price == '':
-#         print("Please select a column for each field")
-#         return 'Please select a column for each field', {'display': 'block'}
-
-#     columns = ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']
-
-#     options = [{'label': col, 'value': col} for col in data[0].keys()]
-#     dropdowns = [dcc.Dropdown(options=options, value='', placeholder=col, id=f'{col}-dropdown') for col in columns]
-
-#     if n_clicks is not None:
-#         return html.Div([
-#             html.H5('Map columns'),
-#             html.Div(dropdowns),
-#             html.Button('Insert Data', id='insert-data-button-2'),
-#         ]), {'display': 'none'}
-
-#     mapping = {customer_id: '', gender: '', invoice_id: '', date: '', quantity: '', total_price: ''}
-#     for i, col in enumerate(columns):
-#         dropdown_value = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
-#         if dropdown_value == f"{col}-dropdown":
-#             mapping[columns[i]] = dash.callback_context.triggered[0]['value']
-#         else:
-#             mapping[columns[i]] = [dropdown.value for dropdown in dropdowns][i]
-
-#     filename = secure_filename(request.cookies.get('filename'))
-
-#     insert_facts(filename=filename, **mapping)
-
-#     return '', {'display': 'none'}
-
-# import dash
-# import pandas as pd
-# import base64
-# import io
-
-# from dash.dependencies import Input, Output, State
-# from zenq.visualizations.plot import Visuals
-# from zenq.api.endpoints import insert_facts
-# from zenq.api.config import db_uri
-
-# layout = dash.html.Div([
-#     html.Div([
-#         html.Div([
-#             dcc.Upload(
-#                 id='upload_buttom',
-#                 children=html.Div(['Drag and Drop or ', html.A('Select Files')], id='csv_text')
-#             ),
-#             dash.html.Div(id='output-data-upload'),
-#         ], className='black_box33'),
-#         html.Div([
-#             html.Div([
-#                 dcc.Graph(id='time-series-plot', figure=Visuals().time_series())
-#             ])
-#         ], className='rect1'),
-#         html.Div([
-#             html.Div([
-#                 dcc.Graph(id='', figure=Visuals().gender_price())
-#             ])
-#         ], className='rect2'),
-#     ]),
-#     html.Div([
-#         html.Div([], className='rect3'),
-#         html.Div([], className='rect4'),
-#     ], className='pordz')
-# ])
-
-# @app.callback(Output('output-data-upload', 'children'),
-#               Input('upload_buttom', 'contents'),
-#               State('upload_buttom', 'filename'))
-# def display_csv(contents, filename):
-#     if contents is not None:
-#         content_type, content_string = contents.split(',')
-#         decoded = base64.b64decode(content_string)
-#         try:
-#             if 'csv' in filename:
-#                 # Assume that the user uploaded a CSV file
-#                 df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
-#         except Exception as e:
-#             print(e)
-#             return html.Div(['There was an error processing this file.'])
-
-#         columns = ['customer_id', 'gender', 'invoice_id', 'date', 'quantity', 'total_price']
-
-#         options = [{'label': col, 'value': col} for col in df.columns]
-#         dropdowns = [dcc.Dropdown(options=options, value='', placeholder=col, id=f'{col}-dropdown') for col in columns]
-
-#         return html.Div([
-#             html.H5(filename),
-#             dcc.DataTable(
-#                 id='datatable-upload',
-#                 data=df.to_dict('records'),
-#                 columns=[{'name': col, 'id': col} for col in df.columns],
-#             ),
-#             html.Button('Insert Data', id='insert-data-button'),
-#             html.Div(dropdowns, id='columns-mapping'),
-#         ])
-
- 
