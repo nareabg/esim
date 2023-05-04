@@ -20,7 +20,9 @@ from lifetimes.plotting import plot_probability_alive_matrix, plot_frequency_rec
     
 
 class Visuals():
-    """ """
+    """ 
+        contains six methods, each of which generates a different type of visualization of the data in a database
+    """
     
     Facts = Facts()
     metadata, engine = Facts.connect_to_db(db_uri)
@@ -31,9 +33,10 @@ class Visuals():
     ):
         self.params_ = {}
 
-    # Function for visualizing the distribution of total prices
     def price_distribution(self):
-        """ """
+        """ 
+            generates a box plot showing the distribution of total prices in the database.
+        """
         # Retrieving total price data from the database
         total_price = self.session.query(Facts.total_price).all()
         # Close the session to prevent any potential memory leaks.
@@ -42,9 +45,10 @@ class Visuals():
         fig = px.box(df, x='total_price')
         fig.show()
         
-    # Function for visualizing the time series of total sales
     def time_series(self):
-        """ """
+        """
+            generates a line chart showing the daily total sales over time
+        """
         # Retrieving daily sales data from the database
         daily_sales = (
             self.session.query(Facts.date, func.sum(Facts.total_price))
@@ -61,9 +65,10 @@ class Visuals():
         fig.show()
 
 
-    # Function for visualizing the distribution of total prices by gender
     def gender_price(self):
-        """ """
+        """ 
+            generates a box plot showing the distribution of total prices in the database by gender
+        """
         # Retrieve gender and total price data from the database using SQLAlchemy.
         price_by_gender = (
             self.session.query(Facts.gender, Facts.total_price).all()
@@ -76,9 +81,10 @@ class Visuals():
         fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
         fig.show()
 
-    # This function retrieves RFM score segment data and plots it in a treemap using Plotly Express.
     def rfm_treemap(self):
-        """ """
+        """ 
+            generates a treemap showing the distribution of RFM scores in the database
+        """
         # Retrieve RFM score segment data from the database using SQLAlchemy and count the number of occurrences for each segment.
         rfm = self.session.query(Facts.RFMScore.segment, func.count(Facts.RFMScore.RFM_SCORE)).group_by(Facts.RFMScore.segment).all()
         # Close the session to prevent any potential memory leaks.
@@ -87,9 +93,10 @@ class Visuals():
         fig = px.treemap(df_treemap, path=['segment'], values='RFM_SCORE')
         fig.show()
         
-    # This function retrieves top customers with the highest expected number of purchases in 30 days and plots them in a bar chart using Plotly.    
     def top_customers_30days(self):
-        """ """
+        """ 
+            generates a bar chart showing the top 10 customers with the highest expected number of purchases in the next 30 days
+        """
         # Retrieve top customers with the highest expected number of purchases in 30 days from the database using SQLAlchemy.
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
                       .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
@@ -113,7 +120,9 @@ class Visuals():
         
             
     def top_customers_90days(self):
-        """ """
+        """
+            generates a bar chart showing the top 10 customers with the highest expected number of purchases in the next 90 days.
+        """
         # Query the top 10 customers with the highest expected purchases in the next 90 days
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
                       .order_by(desc(Facts.Prediction.Expected_Purchases_90))\
@@ -135,7 +144,9 @@ class Visuals():
         fig.show()
         
     def lowest_customers_90days(self):
-        """ """
+        """ 
+            generates a bar chart showing the top 10 customers with the lowest expected number of purchases in the next 90 days.
+        """
         # Query the top 10 customers with the lowest expected purchases in the next 90 days
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
                       .order_by(asc(Facts.Prediction.Expected_Purchases_90))\
@@ -157,7 +168,9 @@ class Visuals():
         fig.show()
         
     def customer_aliveness(self):
-        """ """
+        """ 
+            method illustrastes the probabilities of customers being alive by histogram 
+        """
         # Query the probability of each customer being alive
         customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
         # Close the session to prevent any potential memory leaks.
