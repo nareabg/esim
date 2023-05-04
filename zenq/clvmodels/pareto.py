@@ -36,7 +36,9 @@ logger.addHandler(ch)
 
 # Define the Model class
 class Model():
-    """ """
+    """ 
+        contains methods to compute customer lifetime value metrics, RFM score, and the Pareto/NBD model parameters
+    """
     
     # Set up the Facts table, metadata, engine, and session
     Facts = Facts()
@@ -45,7 +47,9 @@ class Model():
     params_ = {}
 
     def cltv_df(self):
-        """ """
+        """
+            method queries a database to get customer transaction data and computes customer lifetime value metrics
+        """
         # Query the database to get customer transaction data and compute customer lifetime value metrics
         cltv_df = self.session.query(Facts.customer_id,
                                     func.DATE_TRUNC('day', func.min(Facts.date)),
@@ -72,7 +76,9 @@ class Model():
         return cltv
         
     def rfm_score(self):
-        """ """
+        """ 
+            generates RFM_SCORES based on recency, frequency, monetary
+        """
         # calculate the customer lifetime value using the method cltv_df() and assign it to the variable cltv_df
         cltv_df = self.cltv_df() 
         
@@ -111,7 +117,9 @@ class Model():
         return rfm
     
     def fit_paretonbd(self):
-        """ """
+        """ 
+            method instantiates the Pareto/NBD model with a penalizer coefficient of 0.0 and fits the model
+        """
         cltv_df = self.cltv_df()
         _check_inputs(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         # instantiate the Pareto/NBD model
@@ -122,7 +130,9 @@ class Model():
         return model 
     
     def model_params(self):
-        """ """
+        """ 
+            stores the model parameters lambda, alpha, and beta values to the dictionary 
+        """
         
         # fit the Pareto/NBD model
         model = self.fit_paretonbd()
@@ -150,7 +160,9 @@ class Model():
         
     
     def predict_paretonbd(self):
-        """ """
+        """ 
+            method predicts the expected number of purchases for each customer for different time periods
+        """
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         # list of number of days for which we want to predict expected purchases
@@ -173,7 +185,9 @@ class Model():
 
  
     def customer_is_alive(self):
-        """ """
+        """
+            method calculates the probability of each customer being alive 
+        """
         model = self.fit_paretonbd()
         cltv_df = self.cltv_df()
         # calculate the probability that the customer is still alive
