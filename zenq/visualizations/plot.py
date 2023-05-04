@@ -30,20 +30,26 @@ class Visuals():
     ):
         self.params_ = {}
 
+    # Function for visualizing the distribution of total prices
     def price_distribution(self):
+        # Retrieving total price data from the database
         total_price = self.session.query(Facts.total_price).all()
+        # Close the session to prevent any potential memory leaks.
+        self.session.close()
         df = pd.DataFrame(total_price, columns=['total_price'])
         fig = px.box(df, x='total_price')
         fig.show()
         
-
+    # Function for visualizing the time series of total sales
     def time_series(self):
+        # Retrieving daily sales data from the database
         daily_sales = (
             self.session.query(Facts.date, func.sum(Facts.total_price))
             .group_by(Facts.date)
             .order_by(Facts.date)  # sort by date in ascending order
             .all()
         )
+        # Close the session to prevent any potential memory leaks.
         self.session.close()
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines', line=dict(color='blue')))
@@ -52,30 +58,38 @@ class Visuals():
         fig.show()
 
 
-
+    # Function for visualizing the distribution of total prices by gender
     def gender_price(self):
+        # Retrieve gender and total price data from the database using SQLAlchemy.
         price_by_gender = (
             self.session.query(Facts.gender, Facts.total_price).all()
         )
+        # Close the session to prevent any potential memory leaks.
         self.session.close()
+        # Create a pandas dataframe from the retrieved data.
         df = pd.DataFrame(price_by_gender, columns=['gender', 'total_price'])
         fig = px.box(df, x='gender', y='total_price', title='Product price by gender')
         fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
         fig.show()
 
+    # This function retrieves RFM score segment data and plots it in a treemap using Plotly Express.
     def rfm_treemap(self):
+        # Retrieve RFM score segment data from the database using SQLAlchemy and count the number of occurrences for each segment.
         rfm = self.session.query(Facts.RFMScore.segment, func.count(Facts.RFMScore.RFM_SCORE)).group_by(Facts.RFMScore.segment).all()
+        # Close the session to prevent any potential memory leaks.
         self.session.close()
         df_treemap = pd.DataFrame(rfm, columns=['segment', 'RFM_SCORE'])
         fig = px.treemap(df_treemap, path=['segment'], values='RFM_SCORE')
         fig.show()
         
-        
+    # This function retrieves top customers with the highest expected number of purchases in 30 days and plots them in a bar chart using Plotly.    
     def top_customers_30days(self):
+        # Retrieve top customers with the highest expected number of purchases in 30 days from the database using SQLAlchemy.
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_30)\
                       .order_by(desc(Facts.Prediction.Expected_Purchases_30))\
                       .limit(10)\
                       .all()
+        # Close the session to prevent any potential memory leaks.              
         self.session.close()
                      
         fig = go.Figure(data=[go.Bar(
@@ -93,10 +107,12 @@ class Visuals():
         
             
     def top_customers_90days(self):
+        # Query the top 10 customers with the highest expected purchases in the next 90 days
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
                       .order_by(desc(Facts.Prediction.Expected_Purchases_90))\
                       .limit(10)\
                       .all()
+        # Close the session to prevent any potential memory leaks.
         self.session.close()                      
         fig = go.Figure(data=[go.Bar(
         x=[customer.Customer for customer in top_customers],
@@ -112,10 +128,12 @@ class Visuals():
         fig.show()
         
     def lowest_customers_90days(self):
+        # Query the top 10 customers with the lowest expected purchases in the next 90 days
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
                       .order_by(asc(Facts.Prediction.Expected_Purchases_90))\
                       .limit(10)\
                       .all()
+        # Close the session to prevent any potential memory leaks.
         self.session.close()            
         fig = go.Figure(data=[go.Bar(
         x=[customer.Customer for customer in top_customers],
@@ -131,9 +149,10 @@ class Visuals():
         fig.show()
         
     def customer_aliveness(self):
+        # Query the probability of each customer being alive
         customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
+        # Close the session to prevent any potential memory leaks.
         self.session.close()
-
         df = pd.DataFrame(customer_alive_df, columns=['Customer', 'Probability_of_being_Alive' ]) 
         fig = go.Figure(data=[go.Histogram(x=df['Probability_of_being_Alive'], nbinsx=50)])
         fig.update_layout(
