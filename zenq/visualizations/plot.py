@@ -34,7 +34,7 @@ class Visuals():
         total_price = self.session.query(Facts.total_price).all()
         df = pd.DataFrame(total_price, columns=['total_price'])
         fig = px.box(df, x='total_price')
-        return fig
+        fig.show()
         
 
     def time_series(self):
@@ -49,7 +49,7 @@ class Visuals():
         fig.add_trace(go.Scatter(x=[sale[0] for sale in daily_sales], y=[sale[1] for sale in daily_sales], mode='lines', line=dict(color='blue')))
         fig.update_layout(title='Daily Sales', yaxis_title='Total sales', xaxis=dict(showgrid=False, tickangle=45, tickfont=dict(size=12), tickmode='auto', title=''))
         fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-        return fig
+        fig.show()
 
 
 
@@ -61,14 +61,14 @@ class Visuals():
         df = pd.DataFrame(price_by_gender, columns=['gender', 'total_price'])
         fig = px.box(df, x='gender', y='total_price', title='Product price by gender')
         fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-        return fig
+        fig.show()
 
     def rfm_treemap(self):
         rfm = self.session.query(Facts.RFMScore.segment, func.count(Facts.RFMScore.RFM_SCORE)).group_by(Facts.RFMScore.segment).all()
         self.session.close()
         df_treemap = pd.DataFrame(rfm, columns=['segment', 'RFM_SCORE'])
         fig = px.treemap(df_treemap, path=['segment'], values='RFM_SCORE')
-        return fig
+        fig.show()
         
         
     def top_customers_30days(self):
@@ -89,7 +89,7 @@ class Visuals():
         xaxis_title="Customer",
         yaxis_title="Expected Number of Purchases"
         )
-        return fig
+        fig.show()
         
             
     def top_customers_90days(self):
@@ -109,7 +109,7 @@ class Visuals():
         xaxis_title="Customer",
         yaxis_title="Expected Number of Purchases"
         )
-        return fig
+        fig.show()
         
     def lowest_customers_90days(self):
         top_customers = self.session.query(Facts.Prediction.Customer, Facts.Prediction.Expected_Purchases_90)\
@@ -128,7 +128,7 @@ class Visuals():
         xaxis_title="Customer",
         yaxis_title="Expected Number of Purchases"
         )
-        return fig
+        fig.show()
         
     def customer_aliveness(self):
         customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
@@ -141,24 +141,7 @@ class Visuals():
             xaxis_title='Probability of Being Alive',
             yaxis_title='Number of Customers'
         )
-        return fig
-    # def customer_aliveness(self):
-    #     customer_alive_df = self.session.query(Facts.CustomerAlive.Customer, Facts.CustomerAlive.Probability_of_being_Alive).all()
-    #     self.session.close()
-        
-    #     df = pd.DataFrame(customer_alive_df, columns=['Customer', 'Probability_of_being_Alive' ]) 
-    #     color = '#4F1BBD'
-    #     plt.rcParams['text.color'] = '#000000'
-    #     plt.rcParams['axes.labelcolor'] = '#000000'
-    #     plt.rcParams['xtick.color'] = '#000000'
-    #     plt.rcParams['ytick.color'] = '#000000'
-    #     plt.rcParams['grid.color'] = '#d4d4d4' 
-    #     plt.figure(figsize=(8, 6))
-    #     plt.hist(df['Probability_of_being_Alive'], bins=50, color=color, edgecolor='#ffffff')  
-    #     plt.title('Distribution of Probability of Being Alive', fontsize=16)
-    #     plt.xlabel('Probability of Being Alive', fontsize=14)
-    #     plt.ylabel('Number of Customers', fontsize=14) 
-    #     plt.grid(True) 
-    #     return plt
+        fig.show()
+
 
 
