@@ -59,8 +59,8 @@ class Model():
         cltv = cltv[cltv["recency"] > 0]
         cltv = cltv[cltv["T"] > 0]
         cltv.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.cltv_df.__name__}, {len(cltv)} rows written to CLTV table")
-        # insert_log(os.path.basename(__file__), cltv_df.__name__, f"{len(cltv)} rows written to CLTV table")
+        logger.info(f"{self.cltv_df.__name__}/ {len(cltv)} rows written to CLTV table")
+        # logger.error(f"{self.read_data.__name__}/ File {filename} not found. Please try again.")
 
         return cltv
         
@@ -86,9 +86,7 @@ class Model():
         }
         rfm['segment'] = rfm['RFM_SCORE'].replace(seg_map, regex=True)
         rfm.to_sql('RFMScore', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.rfm_score.__name__}")
-        # insert_log(os.path.basename(__file__), rfm_score.__name__, f"{len(rfm)} rows written to RFMScore table")
-
+        logger.info(f"{self.rfm_score.__name__}/ {len(rfm)} rows written to RFMScore table")
         return rfm
     
     def fit_paretonbd(self):
@@ -97,7 +95,8 @@ class Model():
         model = ParetoNBDFitter(penalizer_coef=0.0)
         model.fit(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         insert_log(os.path.basename(__file__), fit_paretonbd.__name__, "Model created successfully")
-        logger.info(f"{self.model_params.__name__}")
+        logger.info(f"{self.model_params.__name__}/ Model initiation done.")
+
         return model 
     
     def model_params(self):
@@ -116,9 +115,7 @@ class Model():
         'beta': [params_['beta']]
         })
         params.to_sql('ParetoParameters', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.model_params.__name__}")
-        logger.error(f"{self.model_params.__name__}")
-
+        logger.info(f"{self.model_params.__name__} / Model parameters inserted to table ParetoParameters")
         return params
         
     
@@ -136,7 +133,7 @@ class Model():
             )
             predict_paretonbd_d[f'Expected_Purchases_{days}'] = cltv_df[f'expected_purchases_{days}']
             predict_paretonbd_d.to_sql('Prediction', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.predict_paretonbd.__name__}")
+        logger.info(f"{self.predict_paretonbd.__name__} / {len(predict_paretonbd_d)} rows written to Prediction table")
         return predict_paretonbd_d
 
  
@@ -150,8 +147,7 @@ class Model():
             'Probability_of_being_Alive': cltv_df['probability_customer_alive']
         })        
         customer_alive.to_sql('CustomerAlive', self.engine, if_exists='replace', index=False, schema='result')
-        logger.info(f"{self.customer_is_alive.__name__}")
-
+        logger.info(f"{self.customer_is_alive.__name__}/ {len(customer_alive)} rows written to CustomerAlive table")
         return customer_alive
 
  

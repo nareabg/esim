@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 import ipywidgets
 from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc
 from datetime import datetime
+from sqlalchemy import func
 from sqlalchemy import create_engine
 from .tables import  Facts 
 from sqlalchemy.orm import sessionmaker
@@ -100,19 +101,21 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
     try:
         data.read_data(filename)
     except FileNotFoundError:
-        print(f"Error: File {filename} not found. Please try again.")
+        # print(f"Error: File {filename} not found. Please try again.")
+        logger.error(f"{insert_facts.__name__}/ {filename} not found. Please try again.") 
+
         return
     except pd.errors.EmptyDataError:
-        print(f"Error: File {filename} is empty. Please try again.")
+        logger.error(f"{insert_facts.__name__}/ {filename} is empty. Please try again") 
         return
     df = data.final_data()
     if df is None:
-        print(f"Error: No data found. Please call the 'read_data' method first to load the data.")
+        logger.error(f"{insert_facts.__name__}/ No data found. Please call the 'read_data' method first to load the data.") 
         return
     required_columns = [customer_id, gender, invoice_id, date, quantity, total_price]
     missing_columns = set(required_columns) - set(df.columns)
     if missing_columns:
-        print(f"Missing columns: {missing_columns}")
+        logger.warning(f"{insert_facts.__name__}/ Missing columns: {missing_columns}.") 
         return
     print(f"Inserting facts for {customer_id} from file csv")
     for i, row in df.iterrows():
@@ -129,14 +132,14 @@ def insert_facts(filename, customer_id, gender, invoice_id, date, quantity, tota
             session.commit()
         except IntegrityError:
             session.rollback()
-            print(f"Skipping row with duplicate invoice_id: {row[invoice_id]}")
+            logger.warning(f"{insert_facts.__name__}/ Skipping row with duplicate invoice_id: {row[invoice_id]}.")           
             continue
     return "Finished inserting facts"
-           
+    session.commit()           
     session.close()
     
     # insert_log(os.path.basename(__file__), 'insert_facts', 1, 'Facts have been inserted successfully.')
    
-    logger.error(f"{insert_facts.__name__} / ERROR FOR INSERTING FACTS MESSAGE")
-    logger.warning(f"{insert_facts.__name__} / WARNING MESSAGE")  
-    logger.info(f"{insert_facts.__name__} / INFO MESSAGE")
+    # logger.error(f"{insert_facts.__name__} / ERROR FOR INSERTING FACTS MESSAGE")
+    # logger.warning(f"{insert_facts.__name__} / WARNING MESSAGE")  
+    # logger.info(f"{insert_facts.__name__} / INFO MESSAGE")

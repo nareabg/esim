@@ -8,11 +8,24 @@ from sqlalchemy.schema import CreateSchema
 from sqlalchemy import Sequence, UniqueConstraint 
 from sqlalchemy import text
 from sqlalchemy.orm import relationship
+import logging
+logging.basicConfig(level=logging.DEBUG, format = "/%(asctime)s / %(name)s / %(levelname)s / %(message)s /%(filename)s/%(lineno)d/")
+logger = logging.getLogger(os.path.basename(__file__))
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+ch.setFormatter(CustomFormatter())
+file_handler = logging.FileHandler('zenq/api/logs.log')
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(CustomFormatter())
 
+logger.addHandler(file_handler)
+logger.addHandler(ch)
 Base = declarative_base()
 
 class Facts(Base):
     def connect_to_db(self, db_uri):
+        logger.info(f"{connect_to_db.__name__}/Connecting to the database: {db_uri}") 
         engine = create_engine(db_uri)
         Session = sessionmaker(bind=engine)
         metadata = Base.metadata
@@ -20,11 +33,13 @@ class Facts(Base):
             try:
                 conn.execute(CreateSchema('initial', if_not_exists=True))
             except exc.SQLAlchemyError:
+                logger.error(f"{connect_to_db.__name__}/Failed to create schema 'initial'")
                 pass
         with engine.connect() as conn:
             try: 
                 conn.execute(CreateSchema('result',  if_not_exists=True))
             except exc.SQLAlchemyError:
+                logger.error(f"{connect_to_db.__name__}/Failed to create schema 'result'")
                 pass       
         return metadata, engine
  
