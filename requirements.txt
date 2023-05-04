@@ -15,7 +15,7 @@ argh==0.26.2
 argon2-cffi @ file:///opt/concourse/worker/volumes/live/d733ceb5-7f19-407b-7da7-a386540ab855/volume/argon2-cffi_1613037492998/work
 asn1crypto @ file:///tmp/build/80754af9/asn1crypto_1596577642040/work
 astor==0.8.1
-astroid @ file:///opt/concourse/worker/volumes/live/343a8902-287c-47fb-6db8-923a63364302/volume/astroid_1613500849157/work
+astroid==2.6.6
 astropy @ file:///opt/concourse/worker/volumes/live/0a514e04-301a-48f9-530f-90365df6420e/volume/astropy_1617745469121/work
 asttokens==2.2.1
 astunparse==1.6.3
