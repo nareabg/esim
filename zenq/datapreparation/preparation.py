@@ -4,6 +4,7 @@ import pandas as pd
 import logging
 import os
 from zenq.logger import CustomFormatter, bcolors
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(funcName)s %(msg)s')
 logger = logging.getLogger(os.path.basename(__file__))
 ch = logging.StreamHandler()

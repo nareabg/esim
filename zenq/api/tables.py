@@ -1,17 +1,14 @@
 import sqlalchemy
-from sqlalchemy import exc
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
-from sqlalchemy.orm import declarative_base
-from sqlalchemy_utils import database_exists, create_database, drop_database
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.schema import CreateSchema
-from sqlalchemy import Sequence, UniqueConstraint 
-from sqlalchemy import text
-from sqlalchemy.orm import relationship
 import logging
+import os
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime, exc, Sequence, UniqueConstraint , text
+from sqlalchemy_utils import database_exists, create_database, drop_database
+from sqlalchemy.orm import sessionmaker, relationship, declarative_base
+from sqlalchemy.schema import CreateSchema
+from zenq.logger import CustomFormatter, bcolors
+
 logging.basicConfig(level=logging.DEBUG, format = "/%(asctime)s / %(name)s / %(levelname)s / %(message)s /%(filename)s/%(lineno)d/")
 logger = logging.getLogger(os.path.basename(__file__))
-# create console handler with a higher log level
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 ch.setFormatter(CustomFormatter())
@@ -25,7 +22,7 @@ Base = declarative_base()
 
 class Facts(Base):
     def connect_to_db(self, db_uri):
-        logger.info(f"{connect_to_db.__name__}/Connecting to the database: {db_uri}") 
+        logger.info(f"{self.connect_to_db.__name__}/Connecting to the database.") 
         engine = create_engine(db_uri)
         Session = sessionmaker(bind=engine)
         metadata = Base.metadata
@@ -33,13 +30,13 @@ class Facts(Base):
             try:
                 conn.execute(CreateSchema('initial', if_not_exists=True))
             except exc.SQLAlchemyError:
-                logger.error(f"{connect_to_db.__name__}/Failed to create schema 'initial'")
+                logger.error(f"{self.connect_to_db.__name__}/Failed to create schema 'initial'")
                 pass
         with engine.connect() as conn:
             try: 
                 conn.execute(CreateSchema('result',  if_not_exists=True))
             except exc.SQLAlchemyError:
-                logger.error(f"{connect_to_db.__name__}/Failed to create schema 'result'")
+                logger.error(f"{self.connect_to_db.__name__}/Failed to create schema 'result'")
                 pass       
         return metadata, engine
  

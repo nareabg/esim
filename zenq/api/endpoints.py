@@ -1,26 +1,19 @@
-import sqlalchemy
 import pandas as pd
 import IPython
 import re
-from sqlalchemy.exc import IntegrityError
-import ipywidgets
-from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc
-from datetime import datetime
-from sqlalchemy import func
-from sqlalchemy import create_engine
-from .tables import  Facts 
-from sqlalchemy.orm import sessionmaker
-from zenq.datapreparation.preparation import data_prep
-import pandas as pd
-import ipywidgets as widgets
-from IPython.display import display
-from sqlalchemy.exc import IntegrityError
-from .config import db_uri
-from zenq.logger import CustomFormatter, bcolors
 import logging
 import os
+import sqlalchemy
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Sequence, UniqueConstraint, create_engine, desc, asc, func
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+from zenq.logger import CustomFormatter, bcolors 
+from zenq.datapreparation.preparation import data_prep
+from .tables import  Facts 
+from .config import db_uri
+ 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s/ %(funcName)s/ %(msg)s/')
-
 logger = logging.getLogger(os.path.basename(__file__))
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
@@ -28,14 +21,11 @@ ch.setFormatter(CustomFormatter())
 file_handler = logging.FileHandler('zenq/api/logs.log')
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(CustomFormatter())
-
 logger.addHandler(file_handler)
 logger.addHandler(ch)
+
 LOGS = Facts.LOGS
-# create a formatter object with the desired format
-# Facts = Facts()
-# metadata, engine = Facts.connect_to_db(db_uri)
-# session = sessionmaker(bind=engine)()
+
 engine = create_engine(db_uri)
 Session = sessionmaker(bind=engine)
 session = Session()

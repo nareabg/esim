@@ -1,24 +1,25 @@
 from __future__ import print_function
 from __future__ import division
-from zenq.api.tables import Base, Facts 
-from zenq.api.config import db_uri
+
 import sqlalchemy 
-from zenq.logger import CustomFormatter, bcolors
-from sqlalchemy.orm import load_only, relationship, joinedload, sessionmaker
-from sqlalchemy import func, create_engine      
 import logging
 import os
 import lifetimes
+import pandas as pd
+import numpy as np
+from sqlalchemy.orm import load_only, relationship, joinedload, sessionmaker
+from sqlalchemy import func, create_engine      
 from lifetimes import BetaGeoFitter, ParetoNBDFitter
 from lifetimes.utils import summary_data_from_transaction_data, _check_inputs, _scale_time
 from lifetimes.generate_data import pareto_nbd_model
-import numpy as np
 from numpy import log, exp, logaddexp, asarray, any as npany
-import pandas as pd
 from pandas import DataFrame
 from datetime import datetime, timedelta
 from scipy.special import gammaln, hyp2f1, betaln, logsumexp
 from scipy.optimize import minimize
+from zenq.api.tables import Base, Facts 
+from zenq.api.config import db_uri
+from zenq.logger import CustomFormatter, bcolors
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s/ %(funcName)s/ %(msg)s/')
 logger = logging.getLogger(os.path.basename(__file__))
@@ -60,8 +61,6 @@ class Model():
         cltv = cltv[cltv["T"] > 0]
         cltv.to_sql('CLTV', self.engine, if_exists='replace', index=False, schema='result')
         logger.info(f"{self.cltv_df.__name__}/ {len(cltv)} rows written to CLTV table")
-        # logger.error(f"{self.read_data.__name__}/ File {filename} not found. Please try again.")
-
         return cltv
         
     def rfm_score(self):
@@ -94,9 +93,7 @@ class Model():
         _check_inputs(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
         model = ParetoNBDFitter(penalizer_coef=0.0)
         model.fit(cltv_df['frequency'], cltv_df['recency'], cltv_df['T'])
-        insert_log(os.path.basename(__file__), fit_paretonbd.__name__, "Model created successfully")
         logger.info(f"{self.model_params.__name__}/ Model initiation done.")
-
         return model 
     
     def model_params(self):
